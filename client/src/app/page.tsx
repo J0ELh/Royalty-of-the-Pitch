@@ -1,23 +1,30 @@
 "use client"
 import React, { useState } from 'react';
 import Header from "./components/Header"
+import SoccerCard from './components/SoccerCard';
 
-const Home: React.FC = () => {
-
-  const [number, setNumber] = useState(0);
-
-  // Correcting the function declaration
-  const updateNumber = () => {
-    setNumber(number + 1);
+function App() {
+  const playerData = {
+    playerName: 'Messi',
+    playerImage: 'face.png', // Replace with actual path
+    nationality: 'flag.png', // Replace with actual path
+    clubLogo: 'club.jpg', // Replace with actual path
+    position: 'RW',
+    ratings: {
+      pac: 81,
+      sho: 89,
+      pas: 90,
+      dri: 94,
+      def: 34,
+      phy: 64
+    }
   };
 
   return (
-    <div>
-      <Header />
-      <h1 className='number hover:text-blue-900'>{number}</h1>
-      <button onClick={updateNumber}>Change Number</button>
+    <div className="App">
+      <SoccerCard {...playerData} />
     </div>
   );
-};
+}
 
-export default Home;
+export default App;
