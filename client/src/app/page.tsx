@@ -50,16 +50,22 @@ function App() {
       ws.onmessage = (event) => { 
         try {
 
-        const data = JSON.parse(event.data);
+        let data = JSON.parse(event.data);
         console.log('Message from server:', data); //ERROR ON LINE 53
+        console.log(typeof data)
+
+        if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+          data =  JSON.parse(data) ; // Wrap the data in an object
+        }
         if (typeof data === 'object' && data !== null) {
-          // console.log('in object condition', data)
-          
-          if (data.id == 0 || data.id == 1) {
-            // console.log('set id')
+          console.log('in object condition', data)
+          if (id == -1 && (data.id == 0 || data.id == 1)) {
+            console.log('set id')
             setId(data.id as number);
           }
+          console.log(data.state)
           if (data.data) {
+            console.log('setting data')
             const playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
             setPlayerData({
               playerName: playerInfo.short_name,
@@ -80,6 +86,7 @@ function App() {
           }
           // Handle game state updates
           if (data.state) {
+            console.log('in switch checking state', data.state)
             switch (data.state) {
               case "both_ready":
                 setShowCards(true);
@@ -87,6 +94,7 @@ function App() {
                 setCardStackCountOpp(data.num_cards);
                 break;
                 case "round_won":
+                  console.log('in round won')
                   setCardStackCountOpp(cardStackCountOpp - 1);
                   setCardStackCountSelf(cardStackCountSelf + 2);
                   setPlayerData({
@@ -107,6 +115,8 @@ function App() {
                   });
                   break;
               case "round_lost":
+                console.log('in round lost')
+
                 setCardStackCountOpp(cardStackCountOpp + 2);
                 setCardStackCountSelf(cardStackCountSelf - 1);
                 setPlayerData({

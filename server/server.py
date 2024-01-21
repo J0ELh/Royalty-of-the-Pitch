@@ -76,9 +76,16 @@ async def websocket_endpoint(websocket: WebSocket):
                             await websocket.send_json(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
                     else:
                         for player_id, websocket in connected_clients.items():
+                            # if player_id == 1:
+                            #     continue #NOTE: TEMPORARY
                             print(player_id)
-                            await websocket.send_json(json.dumps({"state": "round_won" if cur_turn == player_id else "round_lost", "data": json.dumps([combined_json[f"player_{player_id}"][0]])}))
-
+                            player_data = json.dumps([combined_json[f"player_{player_id}"][0]])
+                            await websocket.send_json(json.dumps({
+                                "state": "round_won" if cur_turn == player_id else "round_lost",
+                                "data": player_data,
+                                "your_turn": json.dumps(cur_turn == player_id)  # Add this line
+                            }))
+                            print('done with sending')
             except json.JSONDecodeError as e:
                 print(
                     'json error OCCURED'
