@@ -62,14 +62,14 @@ function App() {
     setMenuOpen(false); // Optionally close the menu
   };
 
-  const settingsRef = useRef(null); // Ref for the settings popup
+  const settingsRef = useRef<HTMLDivElement>(null); // Specify the type of element the ref will be attached to
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
         setShowSettings(false);
       }
-    }
+    };
 
     // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
