@@ -66,8 +66,8 @@ async def websocket_endpoint(websocket: WebSocket):
                             print(combined_json)
                             first_player_response  =  json.dumps([combined_json["player_0"][0]])
                             second_player_response = json.dumps([combined_json["player_1"][0]])
-                            await connected_clients[0].send_json({"state": "both_ready", "data": first_player_response, "your_turn": cur_turn == 0}, "num_cards": len(combined_json["player_0"]))  # Send response back to client
-                            await connected_clients[1].send_json({"state": "both_ready",  "data": second_player_response, "your_turn": cur_turn == 1}, "num_cards": len(combined_json["player_1"]))
+                            await connected_clients[0].send_json({"state": "both_ready", "data": first_player_response, "your_turn": cur_turn == 0, "num_cards": len(combined_json["player_0"])})  # Send response back to client
+                            await connected_clients[1].send_json({"state": "both_ready",  "data": second_player_response, "your_turn": cur_turn == 1, "num_cards": len(combined_json["player_1"])})
                 print(player_0_ready, player_1_ready, play)
 
                 if play:    
