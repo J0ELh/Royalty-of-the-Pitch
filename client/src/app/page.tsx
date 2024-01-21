@@ -95,45 +95,47 @@ function App() {
                 break;
                 case "round_won":
                   console.log('in round won')
-                  setCardStackCountOpp(cardStackCountOpp - 1);
-                  setCardStackCountSelf(cardStackCountSelf + 2);
+                  setCardStackCountOpp(prevCardCount => prevCardCount - 1);
+                  setCardStackCountSelf(prevCardCount => prevCardCount + 2);
+                  const playerInfo = JSON.parse(data.data)[0];
                   setPlayerData({
-                    playerName: data.short_name,
-                    playerImage: data.url,
-                    nationality: data.nationality,
-                    clubLogo: data.club,
+                    playerName: playerInfo.short_name,
+                    playerImage: playerInfo.url,
+                    nationality: playerInfo.nationality,
+                    clubLogo: playerInfo.club,
                     ratings: {
-                      age: data.age,
-                      height_cm: data.height_cm,
-                      overall: data.overall,
-                      potential: data.potential,
-                      pace: data.pace,
-                      shooting: data.shooting,
-                      dribbling: data.dribbling,
+                      age: playerInfo.age,
+                      height_cm: playerInfo.height_cm,
+                      overall: playerInfo.overall,
+                      potential: playerInfo.potential,
+                      pace: playerInfo.pace,
+                      shooting: playerInfo.shooting,
+                      dribbling: playerInfo.dribbling,
                     },
-                    isDisabled: JSON.parse(data.your_turn)
+                    isDisabled: JSON.parse(playerInfo.your_turn)
                   });
                   break;
               case "round_lost":
                 console.log('in round lost')
 
-                setCardStackCountOpp(cardStackCountOpp + 2);
-                setCardStackCountSelf(cardStackCountSelf - 1);
+                setCardStackCountOpp(prevCardCount => prevCardCount + 2);
+                setCardStackCountSelf(prevCardCount => prevCardCount - 1);
+                const playerInfo2 = JSON.parse(data.data)[0];
                 setPlayerData({
-                  playerName: data.short_name,
-                  playerImage: data.url,
-                  nationality: data.nationality,
-                  clubLogo: data.club,
+                  playerName: playerInfo2.short_name,
+                  playerImage: playerInfo2.url,
+                  nationality: playerInfo2.nationality,
+                  clubLogo: playerInfo2.club,
                   ratings: {
-                    age: data.age,
-                    height_cm: data.height_cm,
-                    overall: data.overall,
-                    potential: data.potential,
-                    pace: data.pace,
-                    shooting: data.shooting,
-                    dribbling: data.dribbling,
+                    age: playerInfo2.age,
+                    height_cm: playerInfo2.height_cm,
+                    overall: playerInfo2.overall,
+                    potential: playerInfo2.potential,
+                    pace: playerInfo2.pace,
+                    shooting: playerInfo2.shooting,
+                    dribbling: playerInfo2.dribbling,
                   },
-                  isDisabled: JSON.parse(data.your_turn)
+                  isDisabled: JSON.parse(playerInfo2.your_turn)
                 });
               break;
               default:
