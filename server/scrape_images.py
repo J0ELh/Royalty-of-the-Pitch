@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 import time
 
 
-base_url = 'https://www.fifaindex.com/players/fifa17_173/'
-filename = 'data/image_links/2017_images.txt'  # File where data will be saved
+base_url = 'https://www.fifaindex.com/players/fifa19_353/?'
+filename = 'data/image_links/2019_images.txt'  # File where data will be saved
 page_number = 1
 
 while True:

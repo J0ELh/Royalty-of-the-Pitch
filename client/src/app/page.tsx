@@ -4,21 +4,24 @@ import SoccerCard from './components/SoccerCard';
 import CardStack from './components/CardStack';
 
 function App() {
-  // async function getData(): Promise<any> {
-  //   const url = 'http://localhost:8000/get_data/';
+  async function getData(): Promise<any> {
+    const url = 'http://localhost:8000/get_data/';
 
-  //   try {
-  //       const response = await fetch(url);
-  //       if (!response.ok) {
-  //           throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const data = await response.json();
-  //       return data;
-  //   } catch (error) {
-  //       console.error('Error fetching data: ', error);
-  //       throw error;
-  //   }
-  // }
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data)
+        return data;
+        
+    } catch (error) {
+        console.error('Error fetching data: ', error);
+        throw error;
+    }
+    
+  }
   const [userName, setUserName] = useState('');
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,6 +52,7 @@ function App() {
   };
 
   const handlePlayClick = () => {
+    getData()
     setShowCards(true);
   };
 
