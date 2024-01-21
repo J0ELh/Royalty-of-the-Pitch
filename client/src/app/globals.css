@@ -14,6 +14,58 @@ body {
   min-height: 100vh; /* Ensure it covers the full viewport height */
 }
 
+.name-entry {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  color: white;
+}
+
+.name-entry form {
+  background-color: #0d2c5c; /* Dark blue background */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+}
+
+.name-entry label {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.name-entry input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 2px solid #ffcd00; /* UEFA yellow border */
+  background: transparent;
+  color: white;
+}
+
+.name-entry button {
+  background: #ffcd00; /* UEFA yellow */
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #0d2c5c; /* UEFA dark blue */
+  font-weight: bold;
+}
+
+.name-entry input[type="text"]:focus {
+  outline: none;
+  border-color: #ffffff; /* White focus */
+}
+
+.name-entry button:hover {
+  background-color: #e6b800; /* Darker yellow on hover */
+}
+
 .header {
   background-color: #031a6e; /* Example: UEFA dark blue */
   color: #ffffff;
