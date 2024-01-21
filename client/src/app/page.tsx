@@ -70,7 +70,7 @@ function App() {
         if ("data" in data) {
           const playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
           setPlayerData({
-            playerName: playerInfo.long_name,
+            playerName: playerInfo.short_name,
             playerImage: playerInfo.url,
             nationality: playerInfo.nationality,
             clubLogo: playerInfo.club,
