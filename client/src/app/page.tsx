@@ -42,6 +42,46 @@ function App() {
   const [showCards, setShowCards] = useState(false);
   const [showSettings, setShowSettings] = useState(false); // New state for settings popup
 
+  const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
+  
+  // Function to establish WebSocket connection
+  const connectWebSocket = () => {
+    const ws = new WebSocket('ws://localhost:8000/ws');
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+      // Send any initial messages if needed
+    };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log('Message from server:', data);
+      // Handle incoming messages
+    };
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+    setWebSocket(ws);
+  };
+
+  const handleNameSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (userName.trim() !== '') {
+      setNameSubmitted(true);
+      connectWebSocket(); // Connect to WebSocket when name is submitted
+    }
+  };
+
+  const handleQuit = () => {
+    setShowCards(false);
+    setMenuOpen(false);
+    if (webSocket) {
+      webSocket.close(); // Close WebSocket connection when quitting
+      setWebSocket(null);
+    }
+  };
+
   const playerData = {
     playerName: 'Messi',
     playerImage: 'face.png', // Replace with actual path
@@ -58,22 +98,12 @@ function App() {
     }
   };
 
-  const handleNameSubmit = (event) => {
-    event.preventDefault();
-    if (userName.trim() !== '') {
-      setNameSubmitted(true);
-    }
-  };
 
   const handlePlayClick = () => {
     get_id()
     setShowCards(true);
   };
 
-  const handleQuit = () => {
-    setShowCards(false); // Hide the cards and show the play button again
-    setMenuOpen(false); // Optionally close the menu
-  };
 
   const handleSettings = () => {
     setShowSettings(true); // Show settings popup
