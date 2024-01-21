@@ -53,7 +53,6 @@ def get_cards(data: pd.DataFrame, k = 10):
 
 
 def get_url(card: pd.Series, filename):
-    print('in get_url')
 
     player_name = card.short_name
     with open(filename, 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
@@ -62,6 +61,16 @@ def get_url(card: pd.Series, filename):
             if player_name in name:
                 return url
     return 'https://fifastatic.fifaindex.com/FIFA15/images/players/5/0.png'
+
+def get_country_url(card: pd.Series, filename):
+
+    nation = card.nationality
+    with open(filename, 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
+        for line in file:
+            name, url = line.strip().split(', ')
+            if nation in name:
+                return url
+    return 'https://upload.wikimedia.org/wikipedia/commons/4/47/Pirate_Flag_of_Jack_Rackham.svg'
 
 
 # def main():
