@@ -96,7 +96,6 @@ function App() {
 
 
   const handlePlayClick = () => {
-    get_id()
     setShowCards(true);
   };
 
