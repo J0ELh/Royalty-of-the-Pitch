@@ -2,53 +2,128 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #0d2c5c; /* Same as .App background color */
+  margin: 0; /* Reset default margin */
+}
 
-.soccer-card {
-  width: 250px; /* Adjust as necessary */
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background-color: #ffd700; /* Gold background */
-  color: #000;
+.App {
+  background-color: #0d2c5c; /* UEFA theme color */
+  color: white;
   font-family: 'Arial', sans-serif;
+  min-height: 100vh; /* Ensure it covers the full viewport height */
 }
 
-.card-header {
-  position: relative;
-}
-
-.player-image {
-  width: 100%;
-  object-fit: cover; /* Ensure the image covers the area */
-}
-
-.player-info {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-}
-
-.country-flag, .club-logo {
-  width: 30px; /* Adjust as necessary */
-  height: auto;
-}
-
-.player-name {
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-.player-position {
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-.card-body {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-}
-
-.rating {
+.header {
+  background-color: #031a6e; /* Example: UEFA dark blue */
+  color: #ffffff;
+  padding: 1rem;
   text-align: center;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-weight: bold;
+  border-bottom: 3px solid #ffcd00; /* Example: UEFA accent color */
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.menu-button, .play-button {
+  background: #ffcd00; /* UEFA yellow */
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #0d2c5c; /* UEFA dark blue */
+  font-weight: bold;
+}
+
+.cards-container {
+  display: flex;
+  justify-content: space-between; /* This will space out the children (cards) */
+  padding: 20px; /* Add padding around the cards */
+}
+
+/* Responsive styles for the layout of the cards */
+@media (max-width: 768px) {
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cards-container .soccer-card {
+    margin-bottom: 20px;
+  }
+}
+
+.menu-container {
+  position: relative; /* This is needed to position the submenu absolutely within the menu container */
+  display: inline-block; /* To fit the width to its content */
+}
+
+.menu-options {
+  position: absolute;
+  top: 100%; /* Position it right below the menu button */
+  left: 0;
+  background-color: #0d2c5c; /* UEFA theme color */
+  border-radius: 4px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 1; /* Ensure the menu is above other elements */
+}
+
+.menu-options button {
+  color: white;
+  background: none;
+  border: none;
+  padding: 10px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.menu-options button:hover {
+  background-color: #ffcd00; /* Highlight option on hover */
+}
+
+.play-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust this height as needed */
+  margin-top: -50px; /* Adjust if other elements are above it */
+}
+
+.play-button {
+  font-size: 2em; /* Adjust size as necessary */
+  padding: 10px 20px;
+  cursor: pointer;
+  /* Add further styling as needed */
+}
+
+.settings-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px; /* Adjust as necessary */
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2; /* Above other elements */
+  border-radius: 8px;
+  color: black;
+}
+
+.card-layout {
+  display: flex;
+  justify-content: space-around; /* Adjust layout as needed */
+  padding: 20px;
+}
+
+.card-and-stack {
+  display: flex;
+  flex-direction: column;
 }

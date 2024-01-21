@@ -1,4 +1,5 @@
 import React from 'react';
+import './SoccerCard.css';
 
 interface SoccerCardProps {
     playerName: string;
@@ -16,7 +17,14 @@ interface SoccerCardProps {
     };
 }
 
-const SoccerCard: React.FC<SoccerCardProps> = ({ playerName, playerImage, nationality, clubLogo, position, ratings }) => {
+const SoccerCard: React.FC<SoccerCardProps> = ({
+    playerName,
+    playerImage,
+    nationality,
+    clubLogo,
+    position,
+    ratings = { pac: 0, sho: 0, pas: 0, dri: 0, def: 0, phy: 0 } // Default values
+  }) => {
     return (
         <div className="soccer-card">
         <div className="card-header">

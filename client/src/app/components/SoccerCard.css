@@ -1,0 +1,51 @@
+.soccer-card {
+    width: 250px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffd700;
+    color: #000;
+    font-family: 'Arial', sans-serif;
+    z-index: 2;
+  }
+  
+  .card-header {
+    position: relative;
+  }
+  
+  .player-image {
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  .player-info {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+  
+  .country-flag, .club-logo {
+    width: 30px;
+    height: auto;
+  }
+  
+  .player-name {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  .player-position {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .card-body {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+  }
+  
+  .rating {
+    text-align: center;
+  }
+  
