@@ -48,7 +48,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 json_data = json.loads(data)
                 print("Received data from client:", json_data)
                 # Check for a specific request property in the JSON
-                # 
                 if not player_0_ready or not player_1_ready:
                     if json_data.get("ready_to_play") == True:
                         cur_id = json_data.get('id')

@@ -46,6 +46,9 @@ function App() {
         if ("id" in data) {
           setId(data.id as number);
         }
+        if ("state" in data && data.state == true) {
+          setShowCards(true);
+        }
       };
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
@@ -98,6 +101,7 @@ function App() {
 
   const handlePlayClick = () => {
     try {
+      console.log("send play click")
       webSocket!.send(JSON.stringify({ id: id, ready_to_play: true }));
     } catch (error) {
       console.error("Failed to send ready to play", error);
