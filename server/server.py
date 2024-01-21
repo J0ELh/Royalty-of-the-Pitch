@@ -27,7 +27,7 @@ combined_json = None
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    global play, player_0_ready, player_1_ready, cur_turn
+    global play, player_0_ready, player_1_ready, cards_1, cards_2, cur_turn, combined_json
 
     print('something')
 
@@ -91,9 +91,17 @@ async def websocket_endpoint(websocket: WebSocket):
         # Handle disconnection or errors
         print(f"Error: {e}")
     finally:
+        play = player_0_ready = player_1_ready = False
+        cards_1, cards_2, cur_turn = None, None, -1
         # Remove client and make ID available again
+        if player_id == 0:
+            player_0_ready = False
+        else:
+            player_1_ready = False
+        play = False
         del connected_clients[player_id]
         available_ids.append(player_id)  # Make this ID available again
+        
 
 
 def execute_turn(choice: int):
@@ -153,7 +161,6 @@ def setup_game():
     cur_turn = random.randint(0, 1)
 
     # Combine JSON data for both players
-    global combined_json
     combined_json = {
         "player_0": json_df1,
         "player_1": json_df2,
