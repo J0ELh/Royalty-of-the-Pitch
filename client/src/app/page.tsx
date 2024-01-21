@@ -72,10 +72,9 @@ function App() {
           setId(data.id as number);
         }
         if ("state" in data && data.state == "both_ready") {
-
           setShowCards(true);
-          setCardStackCountSelf(data.cardStackCountSelf);
-          setCardStackCountOpp(data.cardStackCountOpp);
+          setCardStackCountSelf(data.num_cards);
+          setCardStackCountOpp(data.num_cards);
         }
 
       };
@@ -199,13 +198,13 @@ function App() {
 
           {showCards && playerData && (
             <div className="card-layout">
-              <div className="card-and-stack">
+              <div className="card-and-stack-left">
                 <SoccerCard 
                   sendStatistic={sendStatistic}
                   {...playerData} />
                 <CardStack count={cardStackCountSelf} />
               </div>
-              <div className="card-and-stack">
+              <div className="card-and-stack-right">
                 <CardStack count={cardStackCountOpp} />
               </div>
             </div>
