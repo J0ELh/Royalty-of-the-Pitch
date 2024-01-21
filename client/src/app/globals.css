@@ -195,7 +195,14 @@ body {
   padding: 20px;
 }
 
-.card-and-stack {
+.card-and-stack-left {
+  display: flex;
+  flex-direction: column;
+  left: 3%;
+  position: absolute;
+}
+
+.card-and-stack-right {
   display: flex;
   flex-direction: column;
 }
