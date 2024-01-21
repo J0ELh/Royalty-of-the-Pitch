@@ -62,14 +62,14 @@ async def websocket_endpoint(websocket: WebSocket):
                             first_player_response, second_player_response = load_cards()  # Call load_cards function
                             
                             await connected_clients[0].send_text({"state": "both_ready", "data": first_player_response, "your_turn": cur_turn == 0})  # Send response back to client
-                            await connected_clients[1].send_text({"state": "both_ready", data: second_player_response, "your_turn": cur_turn == 1})
+                            await connected_clients[1].send_text({"state": "both_ready",  "data": second_player_response, "your_turn": cur_turn == 1})
                 
                 if play:    
                     choice = json_data.get("choice")
                     response_data = execute_turn(choice)#some function that compares both data and sends 
                     if not response_data: #if response data == false (one player won)
                         for i, ws in enumerate(connected_clients):
-                            await ws.send_text(json.dumps({"state": "won" if cur_turn == i else "lost"}))
+                            await ws.send_text(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
                     else:
                         for i, ws in enumerate(connected_clients):
                             await ws.send_text(json.dumps({"state": "won" if cur_turn == i else "lost", "data": response_data[i]}))
