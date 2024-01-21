@@ -27,37 +27,47 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showCards, setShowCards] = useState(false);
   const [showSettings, setShowSettings] = useState(false); // New state for settings popup
-
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
   
   // Function to establish WebSocket connection
   const connectWebSocket = () => {
-    const ws = new WebSocket('ws://localhost:8000/ws');
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-      // Send any initial messages if needed
-    };
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log('Message from server:', data);
-      // Handle incoming messages
-    };
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
-    setWebSocket(ws);
+    return new Promise((resolve, reject) => {
+      const ws = new WebSocket('ws://localhost:8000/ws');
+  
+      ws.onopen = () => {
+        console.log('WebSocket connected');
+        setWebSocket(ws);
+        resolve(ws); // Resolve the promise when the connection is open
+      };
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Message from server:', data);
+        // Handle incoming messages
+      };
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        reject(error); // Reject the promise on error
+      };
+      ws.onclose = () => {
+        console.log('WebSocket disconnected');
+      };
+      setWebSocket(ws);
+    });
   };
 
-  const handleNameSubmit = (event: React.FormEvent) => {
+  const handleNameSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (userName.trim() !== '') {
       setNameSubmitted(true);
-      connectWebSocket(); // Connect to WebSocket when name is submitted
+      try {
+        const ws = await connectWebSocket() as WebSocket; // Wait for the WebSocket connection
+        ws.send(JSON.stringify({ name: userName, request: "get_data" })); // Send message after connection is established
+      } catch (error) {
+        console.error("Failed to connect WebSocket", error);
+      }
     }
   };
+  
 
   const handleQuit = () => {
     setShowCards(false);

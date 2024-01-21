@@ -36,8 +36,21 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            print(data)
-            
+
+            # Assuming the data is JSON-formatted
+            try:
+                json_data = json.loads(data)
+                print("Received data from client:", json_data)
+                # Check for a specific request property in the JSON
+                if json_data.get("request") == "get_data":
+                    response_data = load_cards()  # Call load_cards function
+                    await websocket.send_text(response_data)  # Send response back to client
+
+            except json.JSONDecodeError:
+                # Handle case where data is not valid JSON
+                print("Received non-JSON data:", data)
+
+            # Continue with your logic...
     except Exception as e:
         # Handle disconnection or errors
         print(f"Error: {e}")
@@ -47,14 +60,12 @@ async def websocket_endpoint(websocket: WebSocket):
         available_ids.append(player_id)  # Make this ID available again
 
 
-@app.get("/")
 def read_root():
     print('hi')
     
     return {"Hello": "World"}
 
 
-@app.get("/get_data/")
 def load_cards():
     data = functionality.get_data(2015)
     cards_1, cards_2, all_cards = functionality.get_cards(data)
