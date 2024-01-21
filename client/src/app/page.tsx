@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef, FormEvent } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SoccerCard from './components/SoccerCard';
 import CardStack from './components/CardStack';
 
@@ -16,25 +16,11 @@ function App() {
       console.log(data);
 
       return data;
-  } catch (error) {
-      console.error('Error fetching data: ', error);
-      throw error;
+    } catch (error) {
+        console.error('Error fetching data: ', error);
+        throw error;
+    }
   }
-  }
-  //   try {
-  //       const response = await fetch(url);
-  //       if (!response.ok) {
-  //           throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const data = await response.json();
-  //       console.log(data);
-
-  //       return data;
-  //   } catch (error) {
-  //       console.error('Error fetching data: ', error);
-  //       throw error;
-  //   }
-  // }
   
   const [userName, setUserName] = useState('');
   const [nameSubmitted, setNameSubmitted] = useState(false);
