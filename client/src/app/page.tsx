@@ -32,8 +32,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false); // New state for settings popup
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
-  const [cardStackCountSelf, setCardStackCountSelf] = useState(0);
-  const [cardStackCountOpp, setCardStackCountOpp] = useState(0);
+  const [cardStackCount, setCardStackCount] = useState(0);
 
   // Function to establish WebSocket connection
   const connectWebSocket = () => {
@@ -53,8 +52,7 @@ function App() {
         }
         if ("state" in data && data.state == "both_ready") {
           setShowCards(true);
-          setCardStackCountSelf(data.cardStackCountSelf);
-          setCardStackCountOpp(data.cardStackCountOpp);
+          setCardStackCount(data.cardStackCount);
         }
       };
       ws.onerror = (error) => {
@@ -197,10 +195,10 @@ function App() {
                 <SoccerCard 
                     sendStatistic={sendStatistic}
                     {...playerData} />
-                <CardStack count={cardStackCountSelf} />
+                <CardStack count={cardStackCount} />
               </div>
               <div className="card-and-stack">
-                <CardStack count={cardStackCountOpp} />
+                <CardStack count={cardStackCount} />
               </div>
             </div>
           )}
