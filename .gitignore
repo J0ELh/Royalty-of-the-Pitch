@@ -38,3 +38,4 @@ node_modules/
 *next-env.d.ts
 
 *venv
+*__pycache__/
