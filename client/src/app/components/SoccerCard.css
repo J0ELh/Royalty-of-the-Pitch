@@ -39,24 +39,21 @@
     font-weight: bold;
   }
   
-  .card-body {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-  }
-  
-  .rating-btn {
-    text-align: center;
-    border: none;
-    background-color: inherit;
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-    padding: 5px 10px;
-    margin: 0 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
+  .small-image {
+    width: 50px; /* Adjust size as needed */
+    height: auto;
+}
+
+.card-body {
+    display: flex; /* Using Flexbox */
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    gap: 10px; /* Space between buttons */
+}
+
+.rating-btn {
+    flex: 0 1 auto; /* Allows the button to grow and shrink but not overflow */
+    padding: 5px 10px; /* Adjust padding as needed for button size */
+}
   
   .rating-btn:hover {
     background-color: rgba(255, 255, 255, 0.8);

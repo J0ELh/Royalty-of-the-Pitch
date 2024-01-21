@@ -1,24 +1,7 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
-import SoccerCard from './components/SoccerCard';
+import SoccerCard, { SoccerCardProps } from './components/SoccerCard';
 import CardStack from './components/CardStack';
-
-
-interface PlayerData {
-  playerName: string
-  playerImage: string
-  nationality: string
-  clubLogo: string
-  // Define other fields with their types here
-  ratings: {
-    height: number
-    overall: number
-    potential: number
-    shot: number
-    pac: number
-    drib: number
-  };
-}
 
 function App() {
   async function get_id(): Promise<any> {
@@ -38,7 +21,7 @@ function App() {
         throw error;
     }
   }
-  const [playerData, setPlayerData] = useState<PlayerData | undefined>(undefined);
+  const [playerData, setPlayerData] = useState<SoccerCardProps | undefined>(undefined);
 
   const [userName, setUserName] = useState('');
   const [id, setId] = useState(-1);
@@ -75,12 +58,13 @@ function App() {
             nationality: playerInfo.nationality,
             clubLogo: playerInfo.club,
             ratings: {
-              height: playerInfo.height_cm,
+              age: playerInfo.age,
+              height_cm: playerInfo.height_cm,
               overall: playerInfo.overall,
               potential: playerInfo.potential,
-              shot: playerInfo.shooting,
-              pac: playerInfo.pace,
-              drib: playerInfo.dribbling,
+              pace: playerInfo.pace,
+              shooting: playerInfo.shooting,
+              dribbling: playerInfo.dribbling,
             }
           });
         }
@@ -132,22 +116,6 @@ function App() {
     console.log(stat)
     webSocket!.send(JSON.stringify({ choice: stat }));
 };
-
-  // const playerData = {
-  //   playerName: 'Messi',
-  //   playerImage: 'face.png', // Replace with actual path
-  //   nationality: 'flag.png', // Replace with actual path
-  //   clubLogo: 'club.jpg', // Replace with actual path
-  //   position: 'RW',
-  //   ratings: {
-  //     pac: 81,
-  //     sho: 89,
-  //     pas: 90,
-  //     dri: 94,
-  //     def: 34,
-  //     phy: 64
-  //   }
-  // };
 
   const handlePlayClick = () => {
     try {
