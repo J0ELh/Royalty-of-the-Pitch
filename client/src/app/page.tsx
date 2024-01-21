@@ -13,15 +13,14 @@ function App() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data)
         return data;
-        
     } catch (error) {
         console.error('Error fetching data: ', error);
         throw error;
     }
-    
   }
+  console.log(getData());
+  
   const [userName, setUserName] = useState('');
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
