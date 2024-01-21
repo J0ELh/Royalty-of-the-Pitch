@@ -78,7 +78,7 @@ async def websocket_endpoint(websocket: WebSocket):
                             await ws.send_json(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
                     else:
                         for i, ws in enumerate(connected_clients):
-                            await ws.send_json(json.dumps({"state": "won" if cur_turn == i else "lost", "data": response_data[i]}))
+                            await ws.send_json(json.dumps({"state": "round_won" if cur_turn == i else "round_lost", "data": response_data[i]}))
 
             except json.JSONDecodeError:
                 # Handle case where data is not valid JSON
