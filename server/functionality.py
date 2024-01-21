@@ -4,6 +4,7 @@ import requests
 
 
 def get_data(year = 2015):
+    # print('in get_data')
     if year > 2020 or year < 2015:
         print('invalid year')
         year = 2015
@@ -14,6 +15,7 @@ def get_data(year = 2015):
     return df[['long_name','short_name', 'nationality', 'club', 'age', 'height_cm', 'overall', 'potential', 'pace', 'shooting', 'dribbling']]
 
 def get_cards(data: pd.DataFrame, k = 10):
+    # print('in get_cards')
     if k % 2 == 1:
         print('invalid number of cards')
         k+=1
@@ -25,15 +27,16 @@ def get_cards(data: pd.DataFrame, k = 10):
 
 
 
-    return sampled_data.iloc[:int(k/2)], sampled_data.iloc[int(k/2):], sampled_data
+    return sampled_data.iloc[:int(k/2)], sampled_data.iloc[int(k/2):]
     
-def print_card(card: pd.Series):
+# def print_card(card: pd.Series):
+
     
-    for i, attribute in enumerate(card):
-        if card.index[i] == 'short_name' or card.index[i] == 'nationality' or card.index[i] == 'club':
-            print(f"{card.index[i]}: {attribute}")
-            continue
-        print(f'{i}) {card.index[i]}: {attribute}')
+#     for i, attribute in enumerate(card):
+#         if card.index[i]     == 'short_name' or card.index[i] == 'nationality' or card.index[i] == 'club':
+#             print(f"{card.index[i]}: {attribute}")
+#             continue
+#         print(f'{i}) {card.index[i]}: {attribute}')
 
 # def download_player_image(player_name, filename):
 #     with open(filename, 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
@@ -50,6 +53,7 @@ def print_card(card: pd.Series):
 
 
 def get_url(card: pd.Series, filename):
+    print('in get_url')
 
     player_name = card.short_name
     with open(filename, 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
@@ -60,12 +64,12 @@ def get_url(card: pd.Series, filename):
     return 'https://fifastatic.fifaindex.com/FIFA15/images/players/5/0.png'
 
 
-def main():
-    data = get_data()
+# def main():
+#     data = get_data()
 
-    for index in range(len(data)):
-        print(get_url(data.iloc[index], 'players_data.txt'))
-    exit()
+#     for index in range(len(data)):
+#         print(get_url(data.iloc[index], 'players_data.txt'))
+#     exit()
 
     user_1_cards, user_2_cards, _ = get_cards(data)
 
@@ -143,5 +147,5 @@ def main():
 
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
