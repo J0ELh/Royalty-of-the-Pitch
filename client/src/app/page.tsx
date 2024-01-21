@@ -90,6 +90,11 @@ function App() {
     }
   };
 
+  const sendStatistic = (stat: string) => {
+    console.log(stat)
+    webSocket!.send(JSON.stringify({ statistic: stat }));
+};
+
   const playerData = {
     playerName: 'Messi',
     playerImage: 'face.png', // Replace with actual path
@@ -189,11 +194,12 @@ function App() {
           {showCards && (
             <div className="card-layout">
               <div className="card-and-stack">
-                <SoccerCard {...playerData} />
+                <SoccerCard 
+                    sendStatistic={sendStatistic}
+                    {...playerData} />
                 <CardStack count={cardStackCountSelf} />
               </div>
               <div className="card-and-stack">
-                <SoccerCard {...playerData} />
                 <CardStack count={cardStackCountOpp} />
               </div>
             </div>
