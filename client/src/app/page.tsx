@@ -32,7 +32,6 @@ function App() {
   const [isPlayButtonDisabled, setIsPlayButtonDisabled] = useState(false);
   const [showSettings, setShowSettings] = useState(false); // New state for settings popup
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
-  const [isDisabled, setIsDisabled] = useState(true)
 
   const [cardStackCountSelf, setCardStackCountSelf] = useState(0);
   const [cardStackCountOpp, setCardStackCountOpp] = useState(0);
@@ -78,21 +77,47 @@ function App() {
             setShowCards(true);
             setCardStackCountSelf(data.num_cards); 
             setCardStackCountOpp(data.num_cards);
-          } else if (data.state == "won_round") {
+          } else if (data.state == "round_won") {
             setCardStackCountOpp(cardStackCountOpp - 1);
             setCardStackCountSelf(cardStackCountSelf + 2);
-          } else { // data.state == "lost_round"
+            setPlayerData({
+              playerName: data.short_name,
+              playerImage: data.url,
+              nationality: data.nationality,
+              clubLogo: data.club,
+              ratings: {
+                age: data.age,
+                height_cm: data.height_cm,
+                overall: data.overall,
+                potential: data.potential,
+                pace: data.pace,
+                shooting: data.shooting,
+                dribbling: data.dribbling,
+              },
+              isDisabled: JSON.parse(data.your_turn)
+            });
+          } else { // data.state == "round_lost"
             setCardStackCountOpp(cardStackCountOpp + 2);
             setCardStackCountSelf(cardStackCountSelf - 1);
+            setPlayerData({
+              playerName: data.short_name,
+              playerImage: data.url,
+              nationality: data.nationality,
+              clubLogo: data.club,
+              ratings: {
+                age: data.age,
+                height_cm: data.height_cm,
+                overall: data.overall,
+                potential: data.potential,
+                pace: data.pace,
+                shooting: data.shooting,
+                dribbling: data.dribbling,
+              },
+              isDisabled: JSON.parse(data.your_turn)
+            });
           }
-        }
-        if ("state" in data && data.state == "round_won") {
-          setIsDisabled(false)
-        }
-        if ("state" in data && data.state == "round_lost") {
-          setIsDisabled(true)
-        }
 
+        }
       };
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
@@ -218,7 +243,6 @@ function App() {
               <div className="card-and-stack-left">
                 <SoccerCard 
                   sendStatistic={sendStatistic}
-                  disabled = {isDisabled}
                   {...playerData} />
                 <CardStack count={cardStackCountSelf} />
               </div>
