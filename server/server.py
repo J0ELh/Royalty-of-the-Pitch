@@ -99,14 +99,13 @@ async def websocket_endpoint(websocket: WebSocket):
         # Handle disconnection or errors
         # print(f"Error: {e.with_traceback()}")
     finally:
-        play = player_0_ready = player_1_ready = False
         cards_1, cards_2, cur_turn = None, None, -1
         # Remove client and make ID available again
         if player_id == 0:
             player_0_ready = False
         else:
             player_1_ready = False
-        # play = False
+        play = False
         del connected_clients[player_id]
 
         print("LOST SOCKET")
@@ -158,11 +157,9 @@ def setup_game():
 
     # Retrieve URLs for cards_1
     urls_1 = [functionality.get_url(card, 'data/image_links/2015_images.txt') for card in cards_1.itertuples(index=False)]
-    # urls_flags_1 = [functionality.get_country_url(card, 'data/country_flags.txt') for card in cards_1.itertuples(index=False)]
 
     # Retrieve URLs for cards_2
     urls_2 = [functionality.get_url(card, 'data/image_links/2015_images.txt') for card in cards_2.itertuples(index=False)]
-    # urls_flags_2 = [functionality.get_country_url(card, 'data/country_flags.txt') for card in cards_2.itertuples(index=False)]
 
 
 
@@ -170,13 +167,10 @@ def setup_game():
     json_df1 = json.loads(cards_1.to_json(orient='records'))
     for index, url in enumerate(urls_1):
         json_df1[index]['url'] = url
-        # json_df1[index]['country_url'] = urls_flags_1[index]
 
     json_df2 = json.loads(cards_2.to_json(orient='records'))
     for index, url in enumerate(urls_2):
         json_df2[index]['url'] = url
-        # json_df2[index]['country_url'] = urls_flags_2[index]
-
 
     # Set the current turn to a random number 0 or 1
     cur_turn = random.randint(0, 1)
