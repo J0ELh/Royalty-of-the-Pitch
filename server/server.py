@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 import functionality
 import json
@@ -8,11 +8,44 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+# Track connected clients and available IDs
+connected_clients = {}
+available_ids = [0, 1]
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    # Check if we have available IDs
+    if not available_ids:
+        await websocket.close(code=1003)  # Close connection if full
+        return
+
+    # Assign an ID and accept the connection
+    player_id = available_ids.pop(0)
+    await websocket.accept()
+
+    await websocket.send_json({"id": player_id})
+    
+    connected_clients[player_id] = websocket
+
+    try:
+        while True:
+            data = await websocket.receive_text()
+            print(data)
+            
+    except Exception as e:
+        # Handle disconnection or errors
+        print(f"Error: {e}")
+    finally:
+        # Remove client and make ID available again
+        del connected_clients[player_id]
+        available_ids.append(player_id)  # Make this ID available again
+
 
 @app.get("/")
 def read_root():
