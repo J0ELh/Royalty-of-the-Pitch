@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import functionality
 import json
 import random
+import traceback
 
 
 app = FastAPI()
@@ -44,7 +45,6 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            print("test")
             # Assuming the data is JSON-formatted
             try:
                 json_data = json.loads(data)
@@ -53,7 +53,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 if not player_0_ready or not player_1_ready:
                     if json_data.get("ready_to_play") == True:
                         cur_id = json_data.get('id')
-                        print(cur_id)
                         if cur_id == 0:
                             player_0_ready = True
                         if cur_id == 1:
@@ -62,49 +61,57 @@ async def websocket_endpoint(websocket: WebSocket):
                             setup_game()
                             play = True
                             # first_player_response, second_player_response = load_cards()  # Call load_cards function
-                            websocket.send_json({"something": "test"})
-                            print(combined_json)
                             first_player_response  =  json.dumps([combined_json["player_0"][0]])
                             second_player_response = json.dumps([combined_json["player_1"][0]])
                             await connected_clients[0].send_json({"state": "both_ready", "data": first_player_response, "your_turn": cur_turn == 0, "num_cards": len(combined_json["player_0"])})  # Send response back to client
                             await connected_clients[1].send_json({"state": "both_ready",  "data": second_player_response, "your_turn": cur_turn == 1, "num_cards": len(combined_json["player_1"])})
-                print(player_0_ready, player_1_ready, play)
+                # print(player_0_ready, player_1_ready, play)
 
-                if play:    
+                if play and 'choice' in json_data:
                     choice = json_data.get("choice")
                     response_data = execute_turn(choice)#some function that compares both data and sends 
+                    # print('response_data', response_data)
                     if not response_data: #if response data == false (one player won)
-                        for i, ws in enumerate(connected_clients):
-                            await ws.send_json(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
+                        for player_id, websocket in connected_clients.items():
+                            await websocket.send_json(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
                     else:
-                        for i, ws in enumerate(connected_clients):
-                            await ws.send_json(json.dumps({"state": "round_won" if cur_turn == i else "round_lost", "data": response_data[i]}))
+                        for player_id, websocket in connected_clients.items():
+                            print(player_id)
+                            await websocket.send_json(json.dumps({"state": "round_won" if cur_turn == player_id else "round_lost", "data": json.dumps([combined_json[f"player_{player_id}"][0]])}))
 
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
+                print(
+                    'json error OCCURED'
+                )
                 # Handle case where data is not valid JSON
-                print("Received non-JSON data:", data)
+                # print(f"Error: {e.with_traceback()}")
 
     except Exception as e:
+        print("EXCEPTION OCCURED")
+        traceback.print_exc()
         # Handle disconnection or errors
-        print(f"Error: {e.with_traceback}")
+        # print(f"Error: {e.with_traceback()}")
     finally:
-        play = player_0_ready = player_1_ready = False
-        cards_1, cards_2, cur_turn = None, None, -1
-        # Remove client and make ID available again
-        if player_id == 0:
-            player_0_ready = False
-        else:
-            player_1_ready = False
-        play = False
+        # play = player_0_ready = player_1_ready = False
+        # cards_1, cards_2, cur_turn = None, None, -1
+        # # Remove client and make ID available again
+        # if player_id == 0:
+        #     player_0_ready = False
+        # else:
+        #     player_1_ready = False
+        # # play = False
         del connected_clients[player_id]
+        print("LOST SOCKET")
         available_ids.append(player_id)  # Make this ID available again
         
 
 
-def execute_turn(choice: int):
+def execute_turn(choice: str):
     global combined_json, cur_turn
-    value_player_0 = combined_json['player_0'][0].index[choice]
-    value_player_1 = combined_json['player_1'][0].index[choice]
+    print(choice)
+    print(combined_json['player_0'][0])
+    value_player_0 = combined_json['player_0'][0][choice]
+    value_player_1 = combined_json['player_1'][0][choice]
 
     winner_index = -1
     if value_player_0 > value_player_1:
@@ -123,14 +130,16 @@ def execute_turn(choice: int):
         combined_json['player_0'].append(combined_json['player_0'].pop(0))
 
 
-    # if combined_json["player_0"][0] and combined_json["player_1"][0]:
+    # print("FINISHED")
+    if combined_json["player_0"][0] and combined_json["player_1"][0]:
+        return True
+    return False
     # return json.dumps([combined_json["player_0"][0]]), json.dumps([combined_json["player_1"][0]])
     # return False
 
 
+
 def read_root():
-    print('hi')
-    
     return {"Hello": "World"}
 
 def setup_game():
@@ -201,3 +210,5 @@ def setup_game():
 #     }
 
 #     return json.dumps(combined_json)
+
+
