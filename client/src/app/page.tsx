@@ -3,6 +3,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import SoccerCard from './components/SoccerCard';
 import CardStack from './components/CardStack';
 
+
+interface PlayerData {
+  playerName: string
+  playerImage: string
+  nationality: string
+  clubLogo: string
+  // Define other fields with their types here
+  ratings: {
+    height: number
+    overall: number
+    potential: number
+    shot: number
+    pac: number
+    drib: number
+  };
+}
+
 function App() {
   async function get_id(): Promise<any> {
     const url = 'http://localhost:8000/ws/';
@@ -21,7 +38,8 @@ function App() {
         throw error;
     }
   }
-  
+  const [playerData, setPlayerData] = useState<PlayerData | undefined>(undefined);
+
   const [userName, setUserName] = useState('');
   const [id, setId] = useState(-1);
   const [nameSubmitted, setNameSubmitted] = useState(false);
@@ -32,7 +50,9 @@ function App() {
   const [showSettings, setShowSettings] = useState(false); // New state for settings popup
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
-  const [cardStackCount, setCardStackCount] = useState(0);
+  const [cardStackCountSelf, setCardStackCountSelf] = useState(0);
+  const [cardStackCountOpp, setCardStackCountOpp] = useState(0);
+  
 
   // Function to establish WebSocket connection
   const connectWebSocket = () => {
@@ -47,13 +67,33 @@ function App() {
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log('Message from server:', data);
+        if ("data" in data) {
+          const playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
+          setPlayerData({
+            playerName: playerInfo.long_name,
+            playerImage: playerInfo.url,
+            nationality: playerInfo.nationality,
+            clubLogo: playerInfo.club,
+            ratings: {
+              height: playerInfo.height_cm,
+              overall: playerInfo.overall,
+              potential: playerInfo.potential,
+              shot: playerInfo.shooting,
+              pac: playerInfo.pace,
+              drib: playerInfo.dribbling,
+            }
+          });
+        }
         if ("id" in data) {
           setId(data.id as number);
         }
         if ("state" in data && data.state == "both_ready") {
+
           setShowCards(true);
-          setCardStackCount(data.cardStackCount);
+          setCardStackCountSelf(data.cardStackCountSelf);
+          setCardStackCountOpp(data.cardStackCountOpp);
         }
+
       };
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
@@ -90,24 +130,24 @@ function App() {
 
   const sendStatistic = (stat: string) => {
     console.log(stat)
-    webSocket!.send(JSON.stringify({ statistic: stat }));
+    webSocket!.send(JSON.stringify({ choice: stat }));
 };
 
-  const playerData = {
-    playerName: 'Messi',
-    playerImage: 'face.png', // Replace with actual path
-    nationality: 'flag.png', // Replace with actual path
-    clubLogo: 'club.jpg', // Replace with actual path
-    position: 'RW',
-    ratings: {
-      pac: 81,
-      sho: 89,
-      pas: 90,
-      dri: 94,
-      def: 34,
-      phy: 64
-    }
-  };
+  // const playerData = {
+  //   playerName: 'Messi',
+  //   playerImage: 'face.png', // Replace with actual path
+  //   nationality: 'flag.png', // Replace with actual path
+  //   clubLogo: 'club.jpg', // Replace with actual path
+  //   position: 'RW',
+  //   ratings: {
+  //     pac: 81,
+  //     sho: 89,
+  //     pas: 90,
+  //     dri: 94,
+  //     def: 34,
+  //     phy: 64
+  //   }
+  // };
 
   const handlePlayClick = () => {
     try {
@@ -189,19 +229,20 @@ function App() {
           )}
 
 
-          {showCards && (
+          {showCards && playerData && (
             <div className="card-layout">
               <div className="card-and-stack">
                 <SoccerCard 
-                    sendStatistic={sendStatistic}
-                    {...playerData} />
-                <CardStack count={cardStackCount} />
+                  sendStatistic={sendStatistic}
+                  {...playerData} />
+                <CardStack count={cardStackCountSelf} />
               </div>
               <div className="card-and-stack">
-                <CardStack count={cardStackCount} />
+                <CardStack count={cardStackCountOpp} />
               </div>
             </div>
           )}
+
           {showSettings && (
             <div className="settings-popup" ref={settingsRef}>
               {/* Settings Popup Content */}
