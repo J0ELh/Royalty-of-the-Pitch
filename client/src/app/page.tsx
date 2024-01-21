@@ -122,6 +122,7 @@ function App() {
   const sendStatistic = (stat: string) => {
     console.log(stat)
     console.log('clicked')
+    console.log(JSON.stringify({ choice: stat }))
     webSocket!.send(JSON.stringify({ choice: stat }));
 };
 
