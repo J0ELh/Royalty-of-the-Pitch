@@ -37,8 +37,8 @@ const SoccerCard: React.FC<SoccerCardProps & { sendStatistic: (stat: string) => 
             <div className="card-header">
                 <img src={playerImage} alt={playerName} className="player-image small-image" />
                 <div className="player-info">
-                    <img src={nationality} alt="Country flag" className="country-flag small-image" />
-                    <img src={clubLogo} alt="Club logo" className="club-logo small-image" />
+                    {/* <img src={nationality} alt="Country flag" className="country-flag small-image" />
+                    <img src={clubLogo} alt="Club logo" className="club-logo small-image" /> */}
                     <div className="player-name">{playerName}</div>
                 </div>
             </div>

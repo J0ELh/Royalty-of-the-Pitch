@@ -1,12 +1,21 @@
 .card-stack {
   position: fixed; /* Establish a stacking context */
   margin-top: 1%;
-  margin-left: 0%
+  margin-left: 0%;
+  padding: 100px;
+  padding-bottom: 300px;
 }
 
 .blank-soccer-card {
   position: absolute;
   top: 0;
   left: 0;
+  background-color: #e1bf03;
+  height: 100%;
   /* Make sure the dimensions match the BlankSoccerCard's dimensions */
+}
+
+.card-and-stack-right > .card-stack > .blank-soccer-card {
+  background-color: rgb(57, 55, 6);
+  
 }

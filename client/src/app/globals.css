@@ -81,8 +81,7 @@ body {
   margin-left: 1rem; /* adjust as needed */
   color: white;
   position: absolute;
-  top: 3%; /* adjust as needed */
-  left: 3%; /* adjust as needed */
+  font-size: large;
 }
 
 .username-display {
@@ -90,7 +89,7 @@ body {
   top: 3%; /* match the top position of .title */
   right: 3%; /* adjust as needed */
   color: #fff; /* or any color you prefer */
-  /* additional styling as needed */
+  font-size: small;
 }
 
 .menu-container {
