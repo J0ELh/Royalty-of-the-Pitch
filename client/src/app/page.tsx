@@ -47,88 +47,108 @@ function App() {
         setWebSocket(ws);
         resolve(ws); // Resolve the promise when the connection is open
       };
-      ws.onmessage = (event) => {
+      ws.onmessage = (event) => { 
+        try {
+
         const data = JSON.parse(event.data);
-        console.log('Message from server:', data);
-        if ("data" in data) {
-          const playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
-          setPlayerData({
-            playerName: playerInfo.short_name,
-            playerImage: playerInfo.url,
-            nationality: playerInfo.nationality,
-            clubLogo: playerInfo.club,
-            ratings: {
-              age: playerInfo.age,
-              height_cm: playerInfo.height_cm,
-              overall: playerInfo.overall,
-              potential: playerInfo.potential,
-              pace: playerInfo.pace,
-              shooting: playerInfo.shooting,
-              dribbling: playerInfo.dribbling,
-            },
-            isDisabled: JSON.parse(data.your_turn)
-          });
-        }
-        if ("id" in data) {
-          setId(data.id as number);
-        }
-        if ("state" in data) {
-          if (data.state == "both_ready") {
-            setShowCards(true);
-            setCardStackCountSelf(data.num_cards); 
-            setCardStackCountOpp(data.num_cards);
-          } else if (data.state == "round_won") {
-            setCardStackCountOpp(cardStackCountOpp - 1);
-            setCardStackCountSelf(cardStackCountSelf + 2);
+        console.log('Message from server:', data); //ERROR ON LINE 53
+        if (typeof data === 'object' && data !== null) {
+          // console.log('in object condition', data)
+          
+          if (data.id == 0 || data.id == 1) {
+            // console.log('set id')
+            setId(data.id as number);
+          }
+          if (data.data) {
+            const playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
             setPlayerData({
-              playerName: data.short_name,
-              playerImage: data.url,
-              nationality: data.nationality,
-              clubLogo: data.club,
+              playerName: playerInfo.short_name,
+              playerImage: playerInfo.url,
+              nationality: playerInfo.nationality,
+              clubLogo: playerInfo.club,
               ratings: {
-                age: data.age,
-                height_cm: data.height_cm,
-                overall: data.overall,
-                potential: data.potential,
-                pace: data.pace,
-                shooting: data.shooting,
-                dribbling: data.dribbling,
-              },
-              isDisabled: JSON.parse(data.your_turn)
-            });
-          } else { // data.state == "round_lost"
-            setCardStackCountOpp(cardStackCountOpp + 2);
-            setCardStackCountSelf(cardStackCountSelf - 1);
-            setPlayerData({
-              playerName: data.short_name,
-              playerImage: data.url,
-              nationality: data.nationality,
-              clubLogo: data.club,
-              ratings: {
-                age: data.age,
-                height_cm: data.height_cm,
-                overall: data.overall,
-                potential: data.potential,
-                pace: data.pace,
-                shooting: data.shooting,
-                dribbling: data.dribbling,
+                age: playerInfo.age,
+                height_cm: playerInfo.height_cm,
+                overall: playerInfo.overall,
+                potential: playerInfo.potential,
+                pace: playerInfo.pace,
+                shooting: playerInfo.shooting,
+                dribbling: playerInfo.dribbling,
               },
               isDisabled: JSON.parse(data.your_turn)
             });
           }
-
+          // Handle game state updates
+          if (data.state) {
+            switch (data.state) {
+              case "both_ready":
+                setShowCards(true);
+                setCardStackCountSelf(data.num_cards); 
+                setCardStackCountOpp(data.num_cards);
+                break;
+                case "round_won":
+                  setCardStackCountOpp(cardStackCountOpp - 1);
+                  setCardStackCountSelf(cardStackCountSelf + 2);
+                  setPlayerData({
+                    playerName: data.short_name,
+                    playerImage: data.url,
+                    nationality: data.nationality,
+                    clubLogo: data.club,
+                    ratings: {
+                      age: data.age,
+                      height_cm: data.height_cm,
+                      overall: data.overall,
+                      potential: data.potential,
+                      pace: data.pace,
+                      shooting: data.shooting,
+                      dribbling: data.dribbling,
+                    },
+                    isDisabled: JSON.parse(data.your_turn)
+                  });
+                  break;
+              case "round_lost":
+                setCardStackCountOpp(cardStackCountOpp + 2);
+                setCardStackCountSelf(cardStackCountSelf - 1);
+                setPlayerData({
+                  playerName: data.short_name,
+                  playerImage: data.url,
+                  nationality: data.nationality,
+                  clubLogo: data.club,
+                  ratings: {
+                    age: data.age,
+                    height_cm: data.height_cm,
+                    overall: data.overall,
+                    potential: data.potential,
+                    pace: data.pace,
+                    shooting: data.shooting,
+                    dribbling: data.dribbling,
+                  },
+                  isDisabled: JSON.parse(data.your_turn)
+                });
+              break;
+              default:
+                console.log('Unhandled state:', data.state);
+              }    
+            }
+          }
+        } catch (error) {
+          console.error('Error processing message from server:', error);
         }
       };
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
         reject(error); // Reject the promise on error
       };
+        
       ws.onclose = () => {
         console.log('WebSocket disconnected');
+        setWebSocket(null); // Set WebSocket to null when disconnected
       };
-      setWebSocket(ws);
     });
   };
+    
+
+      
 
   const handleNameSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -157,7 +177,7 @@ function App() {
     console.log('clicked')
     console.log(JSON.stringify({ choice: stat }))
     webSocket!.send(JSON.stringify({ choice: stat }));
-};
+  };
 
   const handlePlayClick = () => {
     try {

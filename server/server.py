@@ -65,7 +65,7 @@ async def websocket_endpoint(websocket: WebSocket):
                             second_player_response = json.dumps([combined_json["player_1"][0]])
                             await connected_clients[0].send_json({"state": "both_ready", "data": first_player_response, "your_turn": cur_turn == 0, "num_cards": len(combined_json["player_0"])})  # Send response back to client
                             await connected_clients[1].send_json({"state": "both_ready",  "data": second_player_response, "your_turn": cur_turn == 1, "num_cards": len(combined_json["player_1"])})
-                # print(player_0_ready, player_1_ready, play)
+                print(player_0_ready, player_1_ready, play)
 
                 if play and 'choice' in json_data:
                     choice = json_data.get("choice")
@@ -92,15 +92,16 @@ async def websocket_endpoint(websocket: WebSocket):
         # Handle disconnection or errors
         # print(f"Error: {e.with_traceback()}")
     finally:
-        # play = player_0_ready = player_1_ready = False
-        # cards_1, cards_2, cur_turn = None, None, -1
-        # # Remove client and make ID available again
-        # if player_id == 0:
-        #     player_0_ready = False
-        # else:
-        #     player_1_ready = False
-        # # play = False
+        play = player_0_ready = player_1_ready = False
+        cards_1, cards_2, cur_turn = None, None, -1
+        # Remove client and make ID available again
+        if player_id == 0:
+            player_0_ready = False
+        else:
+            player_1_ready = False
+        # play = False
         del connected_clients[player_id]
+
         print("LOST SOCKET")
         available_ids.append(player_id)  # Make this ID available again
         
