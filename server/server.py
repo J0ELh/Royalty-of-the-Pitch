@@ -28,9 +28,6 @@ combined_json = None
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     global play, player_0_ready, player_1_ready, cards_1, cards_2, cur_turn, combined_json
-
-    print('something')
-
     # Check if we have available IDs
     if not available_ids:
         await websocket.close(code=1003)  # Close connection if full
@@ -75,13 +72,13 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 if play:    
                     choice = json_data.get("choice")
-                    # response_data = execute_turn(choice)#some function that compares both data and sends 
-                    # if not response_data: #if response data == false (one player won)
-                    #     for i, ws in enumerate(connected_clients):
-                    #         await ws.send_json(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
-                    # else:
-                    #     for i, ws in enumerate(connected_clients):
-                    #         await ws.send_json(json.dumps({"state": "won" if cur_turn == i else "lost", "data": response_data[i]}))
+                    response_data = execute_turn(choice)#some function that compares both data and sends 
+                    if not response_data: #if response data == false (one player won)
+                        for i, ws in enumerate(connected_clients):
+                            await ws.send_json(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
+                    else:
+                        for i, ws in enumerate(connected_clients):
+                            await ws.send_json(json.dumps({"state": "won" if cur_turn == i else "lost", "data": response_data[i]}))
 
             except json.JSONDecodeError:
                 # Handle case where data is not valid JSON
@@ -89,7 +86,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     except Exception as e:
         # Handle disconnection or errors
-        print(f"Error: {e}")
+        print(f"Error: {e.with_traceback}")
     finally:
         play = player_0_ready = player_1_ready = False
         cards_1, cards_2, cur_turn = None, None, -1
