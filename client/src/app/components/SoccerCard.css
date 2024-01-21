@@ -23,6 +23,14 @@
     bottom: 10px;
     left: 10px;
   }
+
+  .disabledButton {
+    color: #ccc; /* Grayed out text */
+    border: 1px solid #ddd; /* Optional: lighter border */
+    cursor: not-allowed; /* Changes cursor to indicate the button is disabled */
+    /* Other styling as needed */
+}
+
   
   .country-flag, .club-logo {
     width: 30px;
@@ -49,6 +57,7 @@
     flex-wrap: wrap; /* Allows items to wrap to the next line */
     gap: 10px; /* Space between buttons */
 }
+
 
 .rating-btn {
     flex: 0 1 auto; /* Allows the button to grow and shrink but not overflow */

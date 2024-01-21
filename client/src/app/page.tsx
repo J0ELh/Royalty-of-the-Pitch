@@ -32,6 +32,7 @@ function App() {
   const [isPlayButtonDisabled, setIsPlayButtonDisabled] = useState(false);
   const [showSettings, setShowSettings] = useState(false); // New state for settings popup
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
+  const [isDisabled, setIsDisabled] = useState(true)
 
   const [cardStackCountSelf, setCardStackCountSelf] = useState(0);
   const [cardStackCountOpp, setCardStackCountOpp] = useState(0);
@@ -65,7 +66,8 @@ function App() {
               pace: playerInfo.pace,
               shooting: playerInfo.shooting,
               dribbling: playerInfo.dribbling,
-            }
+            },
+            isDisabled: JSON.parse(data.your_turn)
           });
         }
         if ("id" in data) {
@@ -83,6 +85,12 @@ function App() {
             setCardStackCountOpp(cardStackCountOpp + 2);
             setCardStackCountSelf(cardStackCountSelf - 1);
           }
+        }
+        if ("state" in data && data.state == "round_won") {
+          setIsDisabled(false)
+        }
+        if ("state" in data && data.state == "round_lost") {
+          setIsDisabled(true)
         }
 
       };
@@ -121,6 +129,7 @@ function App() {
 
   const sendStatistic = (stat: string) => {
     console.log(stat)
+    console.log('clicked')
     webSocket!.send(JSON.stringify({ choice: stat }));
 };
 
@@ -209,6 +218,7 @@ function App() {
               <div className="card-and-stack-left">
                 <SoccerCard 
                   sendStatistic={sendStatistic}
+                  disabled = {isDisabled}
                   {...playerData} />
                 <CardStack count={cardStackCountSelf} />
               </div>
