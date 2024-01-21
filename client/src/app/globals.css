@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 body {
-  background-color: #0d2c5c; /* Same as .App background color */
+  background-color: #111724; /* Same as .App background color */
   margin: 0; /* Reset default margin */
 }
 
 .App {
-  background-color: #0d2c5c; /* UEFA theme color */
+  background-color: #111724; /* UEFA theme color */
   color: white;
   font-family: 'Arial', sans-serif;
   min-height: 100vh; /* Ensure it covers the full viewport height */
@@ -26,7 +26,7 @@ body {
 }
 
 .name-entry form {
-  background-color: #0d2c5c; /* Dark blue background */
+  background-color: #2c3545; /* Dark blue background */
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
@@ -35,19 +35,22 @@ body {
 .name-entry label {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  color: #b0c0c3;
 }
 
 .name-entry input[type="text"] {
   width: 100%;
   padding: 0.5rem;
   margin-bottom: 1rem;
-  border: 2px solid #ffcd00; /* UEFA yellow border */
+  border: 2px solid #edb63c; /* UEFA 
+  yellow border */
   background: transparent;
-  color: white;
+  color: #b0c0c3;
+  border-radius: 20px;
 }
 
 .name-entry button {
-  background: #ffcd00; /* UEFA yellow */
+  background: #edb63c; /* UEFA yellow */
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
