@@ -16,7 +16,6 @@ export interface SoccerCardProps {
         dribbling: string;
     };
     isDisabled: boolean;
-
 }
 
 const SoccerCard: React.FC<SoccerCardProps & { sendStatistic: (stat: string) => void }> = ({
