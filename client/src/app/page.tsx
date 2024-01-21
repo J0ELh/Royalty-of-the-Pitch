@@ -71,10 +71,18 @@ function App() {
         if ("id" in data) {
           setId(data.id as number);
         }
-        if ("state" in data && data.state == "both_ready") {
-          setShowCards(true);
-          setCardStackCountSelf(data.num_cards);
-          setCardStackCountOpp(data.num_cards);
+        if ("state" in data) {
+          if (data.state == "both_ready") {
+            setShowCards(true);
+            setCardStackCountSelf(data.num_cards); 
+            setCardStackCountOpp(data.num_cards);
+          } else if (data.state == "won_round") {
+            setCardStackCountOpp(cardStackCountOpp - 1);
+            setCardStackCountSelf(cardStackCountSelf + 2);
+          } else { // data.state == "lost_round"
+            setCardStackCountOpp(cardStackCountOpp + 2);
+            setCardStackCountSelf(cardStackCountSelf - 1);
+          }
         }
 
       };
