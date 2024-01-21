@@ -27,6 +27,8 @@ function App() {
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showCards, setShowCards] = useState(false);
+  const [playButtonText, setPlayButtonText] = useState("▶ Play");
+  const [isPlayButtonDisabled, setIsPlayButtonDisabled] = useState(false);
   const [showSettings, setShowSettings] = useState(false); // New state for settings popup
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
@@ -106,8 +108,9 @@ function App() {
 
   const handlePlayClick = () => {
     try {
-      console.log("send play click")
       webSocket!.send(JSON.stringify({ id: id, ready_to_play: true }));
+      setPlayButtonText("Waiting for opponent to play...");
+      setIsPlayButtonDisabled(true);
     } catch (error) {
       console.error("Failed to send ready to play", error);
     }
@@ -172,9 +175,16 @@ function App() {
           </div>
           {!showCards && (
             <div className="play-button-container">
-              <button className="play-button" onClick={handlePlayClick}>▶ Play</button>
+              <button 
+                className="play-button" 
+                onClick={handlePlayClick} 
+                disabled={isPlayButtonDisabled}
+              >
+                {playButtonText}
+              </button>
             </div>
           )}
+
 
           {showCards && (
             <div className="card-layout">
