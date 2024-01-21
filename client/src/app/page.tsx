@@ -35,7 +35,8 @@ function App() {
 
   const [cardStackCountSelf, setCardStackCountSelf] = useState(0);
   const [cardStackCountOpp, setCardStackCountOpp] = useState(0);
-  
+
+  const [gameResult, setGameResult] = useState<string | null>(null); // New state variable for game result  
 
   // Function to establish WebSocket connection
   const connectWebSocket = () => {
@@ -96,7 +97,7 @@ function App() {
               },
               isDisabled: JSON.parse(data.your_turn)
             });
-          } else { // data.state == "round_lost"
+          } else if (data.state == "round_lost") {
             setCardStackCountOpp(cardStackCountOpp + 2);
             setCardStackCountSelf(cardStackCountSelf - 1);
             setPlayerData({
@@ -115,8 +116,10 @@ function App() {
               },
               isDisabled: JSON.parse(data.your_turn)
             });
+          } else if (data.state === "game_won" || data.state === "game_lost") {
+            setGameResult(data.state === "game_won" ? "You Win" : "You Lost"); // Set the game result
+            setShowCards(false); // Hide the cards
           }
-
         }
       };
       ws.onerror = (error) => {
@@ -146,10 +149,7 @@ function App() {
   const handleQuit = () => {
     setShowCards(false);
     setMenuOpen(false);
-    if (webSocket) {
-      webSocket.close(); // Close WebSocket connection when quitting
-      setWebSocket(null);
-    }
+    // reset state
   };
 
   const sendStatistic = (stat: string) => {
@@ -237,6 +237,11 @@ function App() {
             </div>
           )}
 
+          {!showCards && gameResult && (
+            <div className="game-result">
+              <h2>{gameResult}</h2>
+            </div>
+          )}
 
           {showCards && playerData && (
             <div className="card-layout">
