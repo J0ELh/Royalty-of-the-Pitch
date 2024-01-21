@@ -23,6 +23,7 @@ function App() {
   }
   
   const [userName, setUserName] = useState('');
+  const [id, setId] = useState(-1);
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showCards, setShowCards] = useState(false);
@@ -42,7 +43,9 @@ function App() {
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log('Message from server:', data);
-        // Handle incoming messages
+        if ("id" in data) {
+          setId(data.id as number);
+        }
       };
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
@@ -67,7 +70,6 @@ function App() {
       }
     }
   };
-  
 
   const handleQuit = () => {
     setShowCards(false);
@@ -94,11 +96,13 @@ function App() {
     }
   };
 
-
   const handlePlayClick = () => {
-    setShowCards(true);
+    try {
+      webSocket!.send(JSON.stringify({ id: id, ready_to_play: true }));
+    } catch (error) {
+      console.error("Failed to send ready to play", error);
+    }
   };
-
 
   const handleSettings = () => {
     setShowSettings(true); // Show settings popup
@@ -152,6 +156,9 @@ function App() {
                   <button onClick={handleSettings}>Settings</button>
                 </div>
               )}
+            </div>
+            <div className="username-display">
+              User: {userName}
             </div>
           </div>
           {!showCards && (
