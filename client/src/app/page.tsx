@@ -97,19 +97,19 @@ function App() {
       )}
       {nameSubmitted && (
         <>
-          <div className='header'>
-            <h1>Royalty of the Pitch</h1>
-          </div>
-          <div className="menu-container">
-            <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
-              &#9776; Menu
-            </button>
-            {menuOpen && (
-              <div className="menu-options">
-                <button onClick={handleQuit}>Quit</button>
-                <button onClick={handleSettings}>Settings</button>
-              </div>
-            )}
+          <div className="top-bar">
+            <h1 className="title">Royalty of the Pitch</h1>
+            <div className="menu-container">
+              <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
+                &#9776; Menu
+              </button>
+              {menuOpen && (
+                <div className="menu-options">
+                  <button onClick={handleQuit}>Quit</button>
+                  <button onClick={handleSettings}>Settings</button>
+                </div>
+              )}
+            </div>
           </div>
           {!showCards && (
             <div className="play-button-container">

@@ -66,14 +66,26 @@ body {
   background-color: #e6b800; /* Darker yellow on hover */
 }
 
-.header {
-  background-color: #031a6e; /* Example: UEFA dark blue */
-  color: #ffffff;
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #031a6e; /* adjust as needed */
   padding: 1rem;
-  text-align: center;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-weight: bold;
-  border-bottom: 3px solid #ffcd00; /* Example: UEFA accent color */
+}
+
+.title {
+  margin-left: 1rem; /* adjust as needed */
+  color: white;
+  position: absolute;
+}
+
+.menu-container {
+  position: relative; /* For positioning the dropdown menu */
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  align-items: center;
 }
 
 .buttons {
@@ -113,17 +125,15 @@ body {
 
 .menu-container {
   position: relative; /* This is needed to position the submenu absolutely within the menu container */
-  display: inline-block; /* To fit the width to its content */
 }
 
 .menu-options {
   position: absolute;
   top: 100%; /* Position it right below the menu button */
-  left: 0;
   background-color: #0d2c5c; /* UEFA theme color */
   border-radius: 4px;
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  z-index: 1; /* Ensure the menu is above other elements */
+  z-index: 9999; /* Ensure the menu is above other elements */
 }
 
 .menu-options button {
