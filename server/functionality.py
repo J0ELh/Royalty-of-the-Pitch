@@ -62,15 +62,19 @@ def get_url(card: pd.Series, filename):
                 return url
     return 'https://fifastatic.fifaindex.com/FIFA15/images/players/5/0.png'
 
-def get_country_url(card: pd.Series, filename):
+# def get_country_url(card: pd.Series, filename):
 
-    nation = card.nationality
-    with open(filename, 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
-        for line in file:
-            name, url = line.strip().split(', ')
-            if nation in name:
-                return url
-    return 'https://upload.wikimedia.org/wikipedia/commons/4/47/Pirate_Flag_of_Jack_Rackham.svg'
+#     nation = card.nationality
+#     print(nation)
+#     with open(filename, 'r', encoding='utf-8') as file:
+#         for line in file:
+#             print('test')
+#             nation_name, url = line.strip().split('\t')  # Use '\t' instead of ' '
+#             print('test2')
+#             if nation == nation_name:  # Use == for exact match
+#                 print('returned')
+#                 return url
+#     return 'https://upload.wikimedia.org/wikipedia/commons/4/47/Pirate_Flag_of_Jack_Rackham.svg'
 
 
 # def main():
