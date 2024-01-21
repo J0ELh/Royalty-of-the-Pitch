@@ -9,9 +9,7 @@ def get_data(year = 2015):
         year = 2015
     df=pd.read_csv(f"data/statistics/players_{year - 2000}.csv")
 
-    # print(df.columns)
-    # for i, c in enumerate(df.columns):
-    #     print(f"{i}: {c}")
+
     
     return df[['long_name','short_name', 'nationality', 'club', 'age', 'height_cm', 'overall', 'potential', 'pace', 'shooting', 'dribbling']]
 
@@ -24,6 +22,9 @@ def get_cards(data: pd.DataFrame, k = 10):
     data =data.dropna()
 
     sampled_data = data.sample(10, replace=False)
+
+
+
     return sampled_data.iloc[:int(k/2)], sampled_data.iloc[int(k/2):], sampled_data
     
 def print_card(card: pd.Series):
@@ -50,8 +51,7 @@ def print_card(card: pd.Series):
 
 def get_url(card: pd.Series, filename):
 
-    player_name = card['long_name']
-    print('test')
+    player_name = card.short_name
     with open(filename, 'r', encoding='utf-8') as file:  # Specify UTF-8 encoding
         for line in file:
             name, url = line.strip().split(', ')
