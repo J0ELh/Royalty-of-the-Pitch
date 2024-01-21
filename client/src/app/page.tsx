@@ -46,7 +46,7 @@ function App() {
         if ("id" in data) {
           setId(data.id as number);
         }
-        if ("state" in data && data.state == true) {
+        if ("state" in data && data.state == "both_ready") {
           setShowCards(true);
         }
       };
