@@ -22,13 +22,13 @@ connected_clients = {}
 available_ids = [0, 1]
 
 
-play = player_0_ready = player_1_ready = False
+player_0_ready = player_1_ready = False
 cards_1, cards_2, cur_turn = None, None, -1
 combined_json = None
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    global play, player_0_ready, player_1_ready, cards_1, cards_2, cur_turn, combined_json
+    global player_0_ready, player_1_ready, cards_1, cards_2, cur_turn, combined_json
     # Check if we have available IDs
     if not available_ids:
         await websocket.close(code=1003)  # Close connection if full
@@ -37,6 +37,7 @@ async def websocket_endpoint(websocket: WebSocket):
     # Assign an ID and accept the connection
     player_id = available_ids.pop(0)
     await websocket.accept()
+    print(f"connected with websocket {player_id}")
 
     await websocket.send_json({"id": player_id})
     
@@ -44,7 +45,10 @@ async def websocket_endpoint(websocket: WebSocket):
 
     try:
         while True:
+            print(f'websocket {player_id} waiting for data')
             data = await websocket.receive_text()
+            print(f'websocket {player_id} received data')
+
             # Assuming the data is JSON-formatted
             try:
                 json_data = json.loads(data)
@@ -59,21 +63,20 @@ async def websocket_endpoint(websocket: WebSocket):
                             player_1_ready = True
                         if player_1_ready and player_0_ready:
                             setup_game()
-                            play = True
                             # first_player_response, second_player_response = load_cards()  # Call load_cards function
                             first_player_response  =  json.dumps([combined_json["player_0"][0]])
                             second_player_response = json.dumps([combined_json["player_1"][0]])
                             await connected_clients[0].send_json({"state": "both_ready", "data": first_player_response, "your_turn": cur_turn == 0, "num_cards": len(combined_json["player_0"])})  # Send response back to client
                             await connected_clients[1].send_json({"state": "both_ready",  "data": second_player_response, "your_turn": cur_turn == 1, "num_cards": len(combined_json["player_1"])})
-                print(player_0_ready, player_1_ready, play)
-
-                if play and 'choice' in json_data:
+                print(player_0_ready, player_1_ready)
+                print(f"player_0_ready {player_0_ready} and player_1_ready {player_1_ready} and 'choice' in json_data {'choice' in json_data} and 'id' in json_data {'id' in json_data} and json_data['id'] == cur_turn {json_data['id'] == cur_turn if 'id' in json_data else ''}")
+                if player_0_ready and player_1_ready and 'choice' in json_data and "id" in json_data and json_data["id"] == cur_turn:
                     choice = json_data.get("choice")
                     response_data = execute_turn(choice)#some function that compares both data and sends 
                     # print('response_data', response_data)
                     if not response_data: #if response data == false (one player won)
                         for player_id, websocket in connected_clients.items():
-                            await websocket.send_json(json.dumps({"state": "game_won" if cur_turn == i else "game_lost"}))
+                            await websocket.send_json(json.dumps({"state": "game_won" if cur_turn == player_id else "game_lost"}))
                     else:
                         for player_id, websocket in connected_clients.items():
                             # if player_id == 1:
@@ -83,7 +86,7 @@ async def websocket_endpoint(websocket: WebSocket):
                             await websocket.send_json(json.dumps({
                                 "state": "round_won" if cur_turn == player_id else "round_lost",
                                 "data": player_data,
-                                "your_turn": json.dumps(cur_turn == player_id)  # Add this line
+                                "your_turn": cur_turn == player_id  # Add this line
                             }))
                             print('done with sending')
             except json.JSONDecodeError as e:
@@ -105,7 +108,6 @@ async def websocket_endpoint(websocket: WebSocket):
             player_0_ready = False
         else:
             player_1_ready = False
-        play = False
         del connected_clients[player_id]
 
         print("LOST SOCKET")
@@ -115,8 +117,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 def execute_turn(choice: str):
     global combined_json, cur_turn
-    print(choice)
-    print(combined_json['player_0'][0])
+
     value_player_0 = combined_json['player_0'][0][choice]
     value_player_1 = combined_json['player_1'][0][choice]
 
@@ -131,11 +132,12 @@ def execute_turn(choice: str):
         cur_turn = 1
         combined_json['player_1'].append(combined_json['player_0'].pop(0))
         combined_json['player_1'].append(combined_json['player_1'].pop(0))
-    else:
+    elif winner_index == 0:
         cur_turn = 0
         combined_json['player_0'].append(combined_json['player_1'].pop(0))
         combined_json['player_0'].append(combined_json['player_0'].pop(0))
-
+    else:
+        ValueError("Invalid winner_index")
 
     # print("FINISHED")
     if combined_json["player_0"][0] and combined_json["player_1"][0]:

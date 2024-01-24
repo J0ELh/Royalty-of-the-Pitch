@@ -60,7 +60,7 @@ function App() {
         if (typeof data === 'object' && data !== null) {
           console.log('in object condition', data)
           if (id == -1 && (data.id == 0 || data.id == 1)) {
-            console.log('set id')
+            console.log('set id', data.id)
             setId(data.id as number);
           }
           console.log(data.state)
@@ -81,7 +81,7 @@ function App() {
                 shooting: playerInfo.shooting,
                 dribbling: playerInfo.dribbling,
               },
-              isDisabled: JSON.parse(data.your_turn)
+              isDisabled: !(JSON.parse(data.your_turn))
             });
           }
           // Handle game state updates
@@ -98,22 +98,24 @@ function App() {
                   setCardStackCountOpp(prevCardCount => prevCardCount - 1);
                   setCardStackCountSelf(prevCardCount => prevCardCount + 2);
                   const playerInfo = JSON.parse(data.data)[0];
-                  setPlayerData({
-                    playerName: playerInfo.short_name,
-                    playerImage: playerInfo.url,
-                    nationality: playerInfo.nationality,
-                    clubLogo: playerInfo.club,
-                    ratings: {
-                      age: playerInfo.age,
-                      height_cm: playerInfo.height_cm,
-                      overall: playerInfo.overall,
-                      potential: playerInfo.potential,
-                      pace: playerInfo.pace,
-                      shooting: playerInfo.shooting,
-                      dribbling: playerInfo.dribbling,
-                    },
-                    isDisabled: JSON.parse(playerInfo.your_turn)
-                  });
+                  // console.log(playerInfo.your_turn)
+
+                  // setPlayerData({
+                  //   playerName: playerInfo.short_name,
+                  //   playerImage: playerInfo.url,
+                  //   nationality: playerInfo.nationality,
+                  //   clubLogo: playerInfo.club,
+                  //   ratings: {
+                  //     age: playerInfo.age,
+                  //     height_cm: playerInfo.height_cm,
+                  //     overall: playerInfo.overall,
+                  //     potential: playerInfo.potential,
+                  //     pace: playerInfo.pace,
+                  //     shooting: playerInfo.shooting,
+                  //     dribbling: playerInfo.dribbling,
+                  //   },
+                  //   isDisabled: !JSON.parse(data.your_turn)
+                  // });
                   break;
               case "round_lost":
                 console.log('in round lost')
@@ -121,22 +123,24 @@ function App() {
                 setCardStackCountOpp(prevCardCount => prevCardCount + 2);
                 setCardStackCountSelf(prevCardCount => prevCardCount - 1);
                 const playerInfo2 = JSON.parse(data.data)[0];
-                setPlayerData({
-                  playerName: playerInfo2.short_name,
-                  playerImage: playerInfo2.url,
-                  nationality: playerInfo2.nationality,
-                  clubLogo: playerInfo2.club,
-                  ratings: {
-                    age: playerInfo2.age,
-                    height_cm: playerInfo2.height_cm,
-                    overall: playerInfo2.overall,
-                    potential: playerInfo2.potential,
-                    pace: playerInfo2.pace,
-                    shooting: playerInfo2.shooting,
-                    dribbling: playerInfo2.dribbling,
-                  },
-                  isDisabled: JSON.parse(playerInfo2.your_turn)
-                });
+                // console.log(playerInfo2.your_turn)
+
+                // setPlayerData({
+                //   playerName: playerInfo2.short_name,
+                //   playerImage: playerInfo2.url,
+                //   nationality: playerInfo2.nationality,
+                //   clubLogo: playerInfo2.club,
+                //   ratings: {
+                //     age: playerInfo2.age,
+                //     height_cm: playerInfo2.height_cm,
+                //     overall: playerInfo2.overall,
+                //     potential: playerInfo2.potential,
+                //     pace: playerInfo2.pace,
+                //     shooting: playerInfo2.shooting,
+                //     dribbling: playerInfo2.dribbling,
+                //   },
+                //   isDisabled: !JSON.parse(data.your_turn)
+                // });
               break;
               default:
                 console.log('Unhandled state:', data.state);
@@ -188,7 +192,7 @@ function App() {
     console.log(stat)
     console.log('clicked')
     console.log(JSON.stringify({ choice: stat }))
-    webSocket!.send(JSON.stringify({ choice: stat }));
+    webSocket!.send(JSON.stringify({id: id, choice: stat }));
   };
 
   const handlePlayClick = () => {
