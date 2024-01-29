@@ -80,7 +80,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     else:
                         await connected_clients[0].send_json({"state": "round_won" if cur_turn == 0 else "round_lost", "data": json.dumps([combined_json[f"player_{player_id}"][0]]), "your_turn": cur_turn == 0})  # Send response back to client
-                        await connected_clients[1].send_json({"state": "round_won" if cur_turn == 1 else "round_lost", "data": json.dumps([combined_json[f"player_{player_id}"][1]]), "your_turn": cur_turn == 1})
+                        await connected_clients[1].send_json({"state": "round_won" if cur_turn == 1 else "round_lost", "data": json.dumps([combined_json[f"player_{player_id}"][0]]), "your_turn": cur_turn == 1})
                         print('done with sending')
             except json.JSONDecodeError as e:
                 traceback.print_exc()
