@@ -5,6 +5,7 @@
 body {
   background-color: #111724; /* Same as .App background color */
   margin: 0; /* Reset default margin */
+  overflow: hidden; /* disallows scrolling*/
 }
 
 .App {
@@ -207,4 +208,18 @@ body {
 .card-and-stack-right {
   display: flex;
   flex-direction: column;
+}
+
+.game-outcome-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000; /* A high value to ensure it's on top */
+
 }

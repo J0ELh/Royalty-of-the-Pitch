@@ -22,6 +22,8 @@ function App() {
     }
   }
   const [playerData, setPlayerData] = useState<SoccerCardProps | undefined>(undefined);
+  const [otherPlayerData, setOtherPlayerData] = useState<SoccerCardProps | undefined>(undefined);
+
 
   const [userName, setUserName] = useState('');
   const [id, setId] = useState(-1);
@@ -35,6 +37,10 @@ function App() {
 
   const [cardStackCountSelf, setCardStackCountSelf] = useState(0);
   const [cardStackCountOpp, setCardStackCountOpp] = useState(0);
+  
+  const [gameOutcome, setGameOutcome] = useState('');
+  const [showOpponentCard, setShowOpponentCard] = useState(false);
+
   
 
   // Function to establish WebSocket connection
@@ -84,64 +90,55 @@ function App() {
               isDisabled: !(JSON.parse(data.your_turn))
             });
           }
+          if (data.other_data) {
+            console.log('setting data')
+            const playerInfo = JSON.parse(data.other_data)[0]; // Adjust as per your data structure
+            setOtherPlayerData({
+              playerName: playerInfo.short_name,
+              playerImage: playerInfo.url,
+              nationality: playerInfo.nationality,
+              clubLogo: playerInfo.club,
+              ratings: {
+                age: playerInfo.age,
+                height_cm: playerInfo.height_cm,
+                overall: playerInfo.overall,
+                potential: playerInfo.potential,
+                pace: playerInfo.pace,
+                shooting: playerInfo.shooting,
+                dribbling: playerInfo.dribbling,
+              },
+              isDisabled: true
+            });
+          }
           // Handle game state updates
           if (data.state) {
             console.log('in switch checking state', data.state)
             switch (data.state) {
               case "both_ready":
                 setShowCards(true);
-                setCardStackCountSelf(data.num_cards); 
-                setCardStackCountOpp(data.num_cards);
+                setCardStackCountSelf(data.num_cards -1); // minus one because we are displaying the first card differently
+                setCardStackCountOpp(data.num_cards -1 );// minus one because we are displaying the first card differently
                 break;
-                case "round_won":
-                  console.log('in round won')
-                  setCardStackCountOpp(prevCardCount => prevCardCount - 1);
-                  setCardStackCountSelf(prevCardCount => prevCardCount + 2);
-                  const playerInfo = JSON.parse(data.data)[0];
-                  // console.log(playerInfo.your_turn)
-
-                  // setPlayerData({
-                  //   playerName: playerInfo.short_name,
-                  //   playerImage: playerInfo.url,
-                  //   nationality: playerInfo.nationality,
-                  //   clubLogo: playerInfo.club,
-                  //   ratings: {
-                  //     age: playerInfo.age,
-                  //     height_cm: playerInfo.height_cm,
-                  //     overall: playerInfo.overall,
-                  //     potential: playerInfo.potential,
-                  //     pace: playerInfo.pace,
-                  //     shooting: playerInfo.shooting,
-                  //     dribbling: playerInfo.dribbling,
-                  //   },
-                  //   isDisabled: !JSON.parse(data.your_turn)
-                  // });
-                  break;
+              case "round_won":
+                console.log('in round won')
+                setShowOpponentCard(true);
+                setCardStackCountOpp(prevCardCount => prevCardCount - 1);
+                setCardStackCountSelf(prevCardCount => prevCardCount + 1);
+                // const playerInfo = JSON.parse(data.data)[0];
+                break;
               case "round_lost":
                 console.log('in round lost')
-
-                setCardStackCountOpp(prevCardCount => prevCardCount + 2);
+                setShowOpponentCard(true);
+                setCardStackCountOpp(prevCardCount => prevCardCount + 1);
                 setCardStackCountSelf(prevCardCount => prevCardCount - 1);
-                const playerInfo2 = JSON.parse(data.data)[0];
-                // console.log(playerInfo2.your_turn)
-
-                // setPlayerData({
-                //   playerName: playerInfo2.short_name,
-                //   playerImage: playerInfo2.url,
-                //   nationality: playerInfo2.nationality,
-                //   clubLogo: playerInfo2.club,
-                //   ratings: {
-                //     age: playerInfo2.age,
-                //     height_cm: playerInfo2.height_cm,
-                //     overall: playerInfo2.overall,
-                //     potential: playerInfo2.potential,
-                //     pace: playerInfo2.pace,
-                //     shooting: playerInfo2.shooting,
-                //     dribbling: playerInfo2.dribbling,
-                //   },
-                //   isDisabled: !JSON.parse(data.your_turn)
-                // });
-              break;
+                // const playerInfo2 = JSON.parse(data.data)[0];
+                break;
+              case "game_won":
+                setGameOutcome('won');
+                break;
+              case "game_lost":
+                setGameOutcome('lost');
+                break;
               default:
                 console.log('Unhandled state:', data.state);
               }    
@@ -243,6 +240,11 @@ function App() {
           </form>
         </div>
       )}
+      {gameOutcome && (
+        <div className="game-outcome-message">
+          {gameOutcome === 'won' ? 'You Won!' : 'You Lost!'}
+        </div>
+      )}
       {nameSubmitted && (
         <>
           <div className="top-bar">
@@ -284,10 +286,13 @@ function App() {
                 <CardStack count={cardStackCountSelf} />
               </div>
               <div className="card-and-stack-right">
+                {otherPlayerData && <SoccerCard {...otherPlayerData} />}
                 <CardStack count={cardStackCountOpp} />
               </div>
             </div>
           )}
+
+          
 
           {showSettings && (
             <div className="settings-popup" ref={settingsRef}>

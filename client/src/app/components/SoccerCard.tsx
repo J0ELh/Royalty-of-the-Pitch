@@ -16,9 +16,11 @@ export interface SoccerCardProps {
         dribbling: string;
     };
     isDisabled: boolean;
+    sendStatistic?: (stat: string) => void; // Optional prop
 }
 
-const SoccerCard: React.FC<SoccerCardProps & { sendStatistic: (stat: string) => void }> = ({
+
+const SoccerCard: React.FC<SoccerCardProps> = ({
     playerName,
     playerImage,
     nationality,
@@ -28,9 +30,16 @@ const SoccerCard: React.FC<SoccerCardProps & { sendStatistic: (stat: string) => 
     sendStatistic
   }) => {
 
+    const handleStatisticClick = (stat: string) => {
+        if (sendStatistic) {
+            sendStatistic(stat);
+        }
+    };
+
     const buttonClass = isDisabled ? "rating-btn disabledButton" : "rating-btn";
     const cardBodyClass = isDisabled ? "card-body disabled" : "card-body";
 
+    console.log(sendStatistic, isDisabled, sendStatistic ? isDisabled : true)
     
     return (
         <div className="soccer-card">
@@ -43,13 +52,13 @@ const SoccerCard: React.FC<SoccerCardProps & { sendStatistic: (stat: string) => 
                 </div>
             </div>
             <div className={cardBodyClass}>
-                <button className={buttonClass} disabled={isDisabled} onClick={() => sendStatistic('age')}>Age: {ratings.age}</button>
-                <button className={buttonClass} disabled={isDisabled} onClick={() => sendStatistic('height_cm')}>Height (cm): {ratings.height_cm}</button>
-                <button className={buttonClass} disabled={isDisabled} onClick={() => sendStatistic('overall')}>Overall: {ratings.overall}</button>
-                <button className={buttonClass} disabled={isDisabled} onClick={() => sendStatistic('potential')}>Potential: {ratings.potential}</button>
-                <button className={buttonClass} disabled={isDisabled} onClick={() => sendStatistic('pace')}>Pace: {ratings.pace}</button>
-                <button className={buttonClass} disabled={isDisabled} onClick={() => sendStatistic('shooting')}>Shooting: {ratings.shooting}</button>
-                <button className={buttonClass} disabled={isDisabled} onClick={() => sendStatistic('dribbling')}>Dribbling: {ratings.dribbling}</button>
+                <button className={buttonClass} disabled={!sendStatistic || isDisabled} onClick={() => handleStatisticClick('age')}>Age: {ratings.age}</button>
+                <button className={buttonClass} disabled={!sendStatistic || isDisabled} onClick={() => handleStatisticClick('height_cm')}>Height (cm): {ratings.height_cm}</button>
+                <button className={buttonClass} disabled={!sendStatistic || isDisabled} onClick={() => handleStatisticClick('overall')}>Overall: {ratings.overall}</button>
+                <button className={buttonClass} disabled={!sendStatistic || isDisabled} onClick={() => handleStatisticClick('potential')}>Potential: {ratings.potential}</button>
+                <button className={buttonClass} disabled={!sendStatistic || isDisabled} onClick={() => handleStatisticClick('pace')}>Pace: {ratings.pace}</button>
+                <button className={buttonClass} disabled={!sendStatistic || isDisabled} onClick={() => handleStatisticClick('shooting')}>Shooting: {ratings.shooting}</button>
+                <button className={buttonClass} disabled={!sendStatistic || isDisabled} onClick={() => handleStatisticClick('dribbling')}>Dribbling: {ratings.dribbling}</button>
             </div>
         </div>
     );
