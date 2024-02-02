@@ -40,8 +40,26 @@ function App() {
   
   const [gameOutcome, setGameOutcome] = useState('');
   const [showOpponentCard, setShowOpponentCard] = useState(false);
+  const [tempOtherPlayerData, setTempOtherPlayerData] = useState<SoccerCardProps | undefined>(undefined); // Temporary state for incoming opponent data
 
+  useEffect(() => {
+    if (showOpponentCard) {
+      console.log('abc', otherPlayerData)
+      // Set a timer to hide the card after 3 seconds
+      const timer = setTimeout(() => {
+        setShowOpponentCard(false); // This hides the card
+        console.log(otherPlayerData)
+        // After hiding the card, you can show the new card. If you're updating the card data here,
+        // make sure to update the state that holds your opponent's card data.
+        // For demonstration, assuming you fetch and set the new card data elsewhere,
+        // and just need to trigger the display here.
+        // e.g., setOtherPlayerData(newCardData); // Assume this is handled appropriately elsewhere
   
+      }, 3000); // 3000 ms = 3 seconds
+  
+      return () => clearTimeout(timer); // Cleanup the timer on component unmount or if the effect runs again.
+    }
+  }, [showOpponentCard])
 
   // Function to establish WebSocket connection
   const connectWebSocket = () => {
@@ -68,8 +86,9 @@ function App() {
           if (id == -1 && (data.id == 0 || data.id == 1)) {
             console.log('set id', data.id)
             setId(data.id as number);
+            setShowOpponentCard(false)
           }
-          console.log(data.state)
+          console.log(data)
           if (data.data) {
             console.log('setting data')
             const playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
@@ -91,7 +110,10 @@ function App() {
             });
           }
           if (data.other_data) {
-            console.log('setting data')
+            // Before setting new opponent data, save the current opponent data temporarily
+            setTempOtherPlayerData(otherPlayerData);
+          
+            // Now, parse and set the new opponent data as usual
             const playerInfo = JSON.parse(data.other_data)[0]; // Adjust as per your data structure
             setOtherPlayerData({
               playerName: playerInfo.short_name,
@@ -117,7 +139,7 @@ function App() {
               case "both_ready":
                 setShowCards(true);
                 setCardStackCountSelf(data.num_cards -1); // minus one because we are displaying the first card differently
-                setCardStackCountOpp(data.num_cards -1 );// minus one because we are displaying the first card differently
+                setCardStackCountOpp(data.num_cards -1);// minus one because we are displaying the first card differently
                 break;
               case "round_won":
                 console.log('in round won')
@@ -286,7 +308,11 @@ function App() {
                 <CardStack count={cardStackCountSelf} />
               </div>
               <div className="card-and-stack-right">
-                {otherPlayerData && <SoccerCard {...otherPlayerData} />}
+              {showOpponentCard ? (
+                tempOtherPlayerData && <SoccerCard {...tempOtherPlayerData} />
+              ) : (
+                otherPlayerData && <SoccerCard {...otherPlayerData} />
+              )}
                 <CardStack count={cardStackCountOpp} />
               </div>
             </div>
