@@ -42,20 +42,42 @@ function App() {
   const [revealCards, setRevealCards] = useState(false);
   const [tempOtherPlayerData, setTempOtherPlayerData] = useState<SoccerCardProps | undefined>(undefined); // Temporary state for incoming opponent data
   const [tempThisPlayerData, setTempThisPlayerData] = useState<SoccerCardProps | undefined>(undefined)
+  const [isInitialThis, setIsInitialThis] = useState(false)
+  const [isInitialOther, setIsInitialOther] = useState(false)
+
+  // const [latestRoundData, setLatestRoundData] = ({})
 
   useEffect(() => {
     if (revealCards) {
       console.log('starting timer to display')
+      
       // Set a timer to hide the card after 3 seconds
       const timer = setTimeout(() => {
         console.log('ending display')
         setRevealCards(false); // This hides the card
+        setTempOtherPlayerData(otherPlayerData)
+        setTempThisPlayerData(tempThisPlayerData)
   
       }, 3000); // 3000 ms = 3 seconds
   
       return () => clearTimeout(timer); // Cleanup the timer on component unmount or if the effect runs again.
     }
   }, [revealCards])
+
+  useEffect (() => {
+    if (isInitialOther) {
+      setOtherPlayerData(tempOtherPlayerData)
+      setIsInitialOther(false)
+    }
+  }, [tempOtherPlayerData])
+
+  useEffect (() => {
+    if (isInitialThis) {
+      setPlayerData(tempThisPlayerData)
+      setIsInitialThis(false)
+    }
+  }, [tempThisPlayerData])
+
 
   // Function to establish WebSocket connection
   const connectWebSocket = () => {
@@ -72,69 +94,63 @@ function App() {
 
         let data = JSON.parse(event.data);
         console.log('Message from server:', data); //ERROR ON LINE 53
-        console.log(typeof data)
-        if (data.state === "round_won" || data.state === "round_lost") {
-          // Save current player and opponent data before updating with new round data
-          setTempOtherPlayerData(otherPlayerData);
-          setTempThisPlayerData(playerData);
-          setRevealCards(true);
-        }
+        
         if (typeof data !== 'object' || data === null || Array.isArray(data)) {
           data =  JSON.parse(data) ; // Wrap the data in an object
         }
         if (typeof data === 'object' && data !== null) {
-          console.log('in object condition', data)
+          console.log(data)
           if (id == -1 && (data.id == 0 || data.id == 1)) {
             console.log('set id', data.id)
             setId(data.id as number);
+            setIsInitialOther(true)
+            setIsInitialThis(true)
             setRevealCards(false)
           }
-          console.log(data)
-          if (data.data) {
-            // if (playerData) {
-            //   setTempThisPlayerData(playerData)
-            // }
-            console.log('setting data')
-            const playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
+          if (data.state === "round_won" || data.state === "round_lost") {
+            // Save current player and opponent data before updating with new round data
+            setRevealCards(true);
+            console.log('abc', otherPlayerData, tempOtherPlayerData)
+          }
+          if (data.data && data.other_data) {
+            const this_playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
             setPlayerData({
-              playerName: playerInfo.short_name,
-              playerImage: playerInfo.url,
-              nationality: playerInfo.nationality,
-              clubLogo: playerInfo.club,
+              playerName: this_playerInfo.short_name,
+              playerImage: this_playerInfo.url,
+              nationality: this_playerInfo.nationality,
+              clubLogo: this_playerInfo.club,
               ratings: {
-                age: playerInfo.age,
-                height_cm: playerInfo.height_cm,
-                overall: playerInfo.overall,
-                potential: playerInfo.potential,
-                pace: playerInfo.pace,
-                shooting: playerInfo.shooting,
-                dribbling: playerInfo.dribbling,
+                age: this_playerInfo.age,
+                height_cm: this_playerInfo.height_cm,
+                overall: this_playerInfo.overall,
+                potential: this_playerInfo.potential,
+                pace: this_playerInfo.pace,
+                shooting: this_playerInfo.shooting,
+                dribbling: this_playerInfo.dribbling,
               },
               isDisabled: !(JSON.parse(data.your_turn))
             });
-          }
-          if (data.other_data) {
-            // Before setting new opponent data, save the current opponent data temporarily
-            // setTempOtherPlayerData(otherPlayerData);
+            console.log("ABC", playerData)
           
             // Now, parse and set the new opponent data as usual
-            const playerInfo = JSON.parse(data.other_data)[0]; // Adjust as per your data structure
+            const other_playerInfo = JSON.parse(data.other_data)[0]; // Adjust as per your data structure
             setOtherPlayerData({
-              playerName: playerInfo.short_name,
-              playerImage: playerInfo.url,
-              nationality: playerInfo.nationality,
-              clubLogo: playerInfo.club,
+              playerName: other_playerInfo.short_name,
+              playerImage: other_playerInfo.url,
+              nationality: other_playerInfo.nationality,
+              clubLogo: other_playerInfo.club,
               ratings: {
-                age: playerInfo.age,
-                height_cm: playerInfo.height_cm,
-                overall: playerInfo.overall,
-                potential: playerInfo.potential,
-                pace: playerInfo.pace,
-                shooting: playerInfo.shooting,
-                dribbling: playerInfo.dribbling,
+                age: other_playerInfo.age,
+                height_cm: other_playerInfo.height_cm,
+                overall: other_playerInfo.overall,
+                potential: other_playerInfo.potential,
+                pace: other_playerInfo.pace,
+                shooting: other_playerInfo.shooting,
+                dribbling: other_playerInfo.dribbling,
               },
               isDisabled: true
             });
+
           }
           // Handle game state updates
           if (data.state) {
@@ -178,6 +194,8 @@ function App() {
       };
         
       ws.onclose = () => {
+        setIsInitialThis(false)
+        setIsInitialOther(false)
         console.log('WebSocket disconnected');
         setWebSocket(null); // Set WebSocket to null when disconnected
       };

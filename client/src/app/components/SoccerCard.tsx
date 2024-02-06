@@ -39,7 +39,7 @@ const SoccerCard: React.FC<SoccerCardProps> = ({
     const buttonClass = isDisabled ? "rating-btn disabledButton" : "rating-btn";
     const cardBodyClass = isDisabled ? "card-body disabled" : "card-body";
 
-    console.log(sendStatistic, isDisabled, sendStatistic ? isDisabled : true)
+    // console.log(sendStatistic, isDisabled, sendStatistic ? isDisabled : true)
     
     return (
         <div className="soccer-card">
