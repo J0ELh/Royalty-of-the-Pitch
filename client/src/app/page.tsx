@@ -47,6 +47,8 @@ function App() {
 
   // const [latestRoundData, setLatestRoundData] = ({})
 
+  
+
   useEffect(() => {
     if (revealCards) {
       console.log('starting timer to display')
@@ -54,9 +56,7 @@ function App() {
       // Set a timer to hide the card after 3 seconds
       const timer = setTimeout(() => {
         console.log('ending display')
-        setRevealCards(false); // This hides the card
-        setTempOtherPlayerData(otherPlayerData)
-        setTempThisPlayerData(tempThisPlayerData)
+        setRevealCards(false); 
   
       }, 3000); // 3000 ms = 3 seconds
   
@@ -66,14 +66,14 @@ function App() {
 
   useEffect (() => {
     if (isInitialOther) {
-      setOtherPlayerData(tempOtherPlayerData)
+      // setOtherPlayerData(tempOtherPlayerData)
       setIsInitialOther(false)
     }
   }, [tempOtherPlayerData])
 
   useEffect (() => {
     if (isInitialThis) {
-      setPlayerData(tempThisPlayerData)
+      // setPlayerData(tempThisPlayerData)
       setIsInitialThis(false)
     }
   }, [tempThisPlayerData])
@@ -110,10 +110,46 @@ function App() {
           if (data.state === "round_won" || data.state === "round_lost") {
             // Save current player and opponent data before updating with new round data
             setRevealCards(true);
-            console.log('abc', otherPlayerData, tempOtherPlayerData)
           }
-          if (data.data && data.other_data) {
-            const this_playerInfo = JSON.parse(data.data)[0]; // Adjust as per your data structure
+          if (data.old_card && data.old_card_opponent) {
+            const temp_old_card_data = JSON.parse(data.old_card)[0]
+            setTempThisPlayerData({
+              playerName: temp_old_card_data.short_name,
+              playerImage: temp_old_card_data.url,
+              nationality: temp_old_card_data.nationality,
+              clubLogo: temp_old_card_data.club,
+              ratings: {
+                age: temp_old_card_data.age,
+                height_cm: temp_old_card_data.height_cm,
+                overall: temp_old_card_data.overall,
+                potential: temp_old_card_data.potential,
+                pace: temp_old_card_data.pace,
+                shooting: temp_old_card_data.shooting,
+                dribbling: temp_old_card_data.dribbling,
+              },
+              isDisabled: true
+            })
+            
+            const temp_old_card_data_opp = JSON.parse(data.old_card_opponent)[0]
+            setTempOtherPlayerData({
+              playerName: temp_old_card_data_opp.short_name,
+              playerImage: temp_old_card_data_opp.url,
+              nationality: temp_old_card_data_opp.nationality,
+              clubLogo: temp_old_card_data_opp.club,
+              ratings: {
+                age: temp_old_card_data_opp.age,
+                height_cm: temp_old_card_data_opp.height_cm,
+                overall: temp_old_card_data_opp.overall,
+                potential: temp_old_card_data_opp.potential,
+                pace: temp_old_card_data_opp.pace,
+                shooting: temp_old_card_data_opp.shooting,
+                dribbling: temp_old_card_data_opp.dribbling,
+              },
+              isDisabled: true
+            })
+          }
+          if (data.current_card && data.current_card_opponent) {
+            const this_playerInfo = JSON.parse(data.current_card)[0]; // Adjust as per your data structure
             setPlayerData({
               playerName: this_playerInfo.short_name,
               playerImage: this_playerInfo.url,
@@ -130,10 +166,10 @@ function App() {
               },
               isDisabled: !(JSON.parse(data.your_turn))
             });
-            console.log("ABC", playerData)
+            // console.log("ABC", playerData)
           
             // Now, parse and set the new opponent data as usual
-            const other_playerInfo = JSON.parse(data.other_data)[0]; // Adjust as per your data structure
+            const other_playerInfo = JSON.parse(data.current_card_opponent)[0]; // Adjust as per your data structure
             setOtherPlayerData({
               playerName: other_playerInfo.short_name,
               playerImage: other_playerInfo.url,
@@ -228,12 +264,11 @@ function App() {
   };
 
   const sendStatistic = (stat: string) => {
-    setTempOtherPlayerData(otherPlayerData)
-    setTempThisPlayerData(playerData)
-    console.log(stat)
-    console.log('clicked')
-    console.log(JSON.stringify({ choice: stat }))
-    webSocket!.send(JSON.stringify({id: id, choice: stat }));
+    const timer = setTimeout(() => {
+      webSocket!.send(JSON.stringify({id: id, choice: stat }));
+    }, 2000); // 3000 ms = 3 seconds
+    
+    
   };
 
   const handlePlayClick = () => {
