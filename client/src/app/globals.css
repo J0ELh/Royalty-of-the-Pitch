@@ -199,15 +199,19 @@ body {
 }
 
 .card-and-stack-left {
+  
   display: flex;
   flex-direction: column;
-  left: 3%;
+  bottom: 5px;
+  left: 5%;
   position: absolute;
 }
 
 .card-and-stack-right {
   display: flex;
   flex-direction: column;
+  right: 5%;
+  position: absolute;
 }
 
 .game-outcome-message {
@@ -222,4 +226,10 @@ body {
   border-radius: 10px;
   z-index: 1000; /* A high value to ensure it's on top */
 
+}
+
+
+.left_card {
+  margin-left: 100px;
+  background-color: red;
 }

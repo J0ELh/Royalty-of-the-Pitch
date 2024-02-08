@@ -17,6 +17,7 @@ export interface SoccerCardProps {
     };
     isDisabled: boolean;
     sendStatistic?: (stat: string) => void; // Optional prop
+    className?: string; 
 }
 
 
@@ -27,7 +28,8 @@ const SoccerCard: React.FC<SoccerCardProps> = ({
     clubLogo,
     ratings,
     isDisabled,
-    sendStatistic
+    sendStatistic,
+    className,
   }) => {
 
     const handleStatisticClick = (stat: string) => {

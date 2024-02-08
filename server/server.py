@@ -110,7 +110,8 @@ async def websocket_endpoint(websocket: WebSocket):
                             "current_card_opponent": json.dumps([combined_json[f"player_{1}"][0]]),
                             "old_card": old_player_0_card,
                             "old_card_opponent": old_player_1_card,
-                            "your_turn": cur_turn == 0
+                            "your_turn": cur_turn == 0,
+                            "last_choice": choice,
                             })  # Send response back to client
                         await connected_clients[1].send_json({
                             "state": "round_won" if cur_turn == 1 else "round_lost", 
@@ -118,9 +119,11 @@ async def websocket_endpoint(websocket: WebSocket):
                             "current_card_opponent": json.dumps([combined_json[f"player_{0}"][0]]), 
                             "old_card": old_player_1_card,
                             "old_card_opponent": old_player_0_card,
-                            "your_turn": cur_turn == 1
+                            "your_turn": cur_turn == 1,
+                            "last_choice": choice,
                             })
                         print('done with sending')
+                        print(choice)
                         print_cards(combined_json["player_0"], "player 0:")
                         print_cards(combined_json["player_1"], "player 1:")
             except json.JSONDecodeError as e:

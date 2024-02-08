@@ -44,6 +44,23 @@ function App() {
   const [tempThisPlayerData, setTempThisPlayerData] = useState<SoccerCardProps | undefined>(undefined)
   const [isInitialThis, setIsInitialThis] = useState(false)
   const [isInitialOther, setIsInitialOther] = useState(false)
+  const [fakePlayerData, SetFakePlayerData] = useState<SoccerCardProps | undefined>({
+    playerName: "???",
+    playerImage: "https://fifastatic.fifaindex.com/FIFA15/images/players/5/228246.png",
+    nationality: "?",
+    clubLogo: "?",
+    ratings: {
+      age: "?",
+      height_cm: "?",
+      overall: "?",
+      potential: "?",
+      pace: "?",
+      shooting: "?",
+      dribbling: "?",
+    },
+    isDisabled: true
+  })
+  const [lastChoice, setLastChoice] = useState<string>("age") // NOTE: This is a stub value
 
   // const [latestRoundData, setLatestRoundData] = ({})
 
@@ -100,6 +117,10 @@ function App() {
         }
         if (typeof data === 'object' && data !== null) {
           console.log(data)
+          // if (data.last_choice) {
+          //   // setLastChoice(JSON.parse(data.last_choice))
+          //   console.log(JSON.parse(data.last_choice))
+          // }
           if (id == -1 && (data.id == 0 || data.id == 1)) {
             console.log('set id', data.id)
             setId(data.id as number);
@@ -365,7 +386,7 @@ function App() {
                   sendStatistic={sendStatistic}
                   {...tempThisPlayerData} />)
                   :
-                  <SoccerCard 
+                  <SoccerCard
                   sendStatistic={sendStatistic}
                   {...playerData} />
                 }
@@ -374,9 +395,10 @@ function App() {
               <div className="card-and-stack-right">
               {
                 revealCards ?
-                tempOtherPlayerData && <SoccerCard {...tempOtherPlayerData} />
+                tempOtherPlayerData && 
+                <SoccerCard {...tempOtherPlayerData} />
                 :
-                <></>
+                <SoccerCard {...fakePlayerData} />
               }
                 <CardStack count={cardStackCountOpp} />
               </div>
